@@ -1,0 +1,32 @@
+x-sanjus-build: &sanjus-build  
+  context: ./backend
+  dockerfile: Dockerfile
+x-sanjus-depends-on: &sanjus-depends-on
+  - postgres
+
+version: "3.7"
+services:
+  postgres:
+    image: postgres:10
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: inovacnj
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+  sanjus:
+    env_file: docker/.env
+    build: *sanjus-build
+    container_name: sanjus_backend
+    command: ["gunicorn", "app"]
+    restart: unless-stopped
+    depends_on: *sanjus-depends-on
+    ports:
+      - 5002:5002
+      - 5003:5003
+
+volumes:
+  pgdata:

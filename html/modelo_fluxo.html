@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html  xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="pt-BR"
+    lang="pt-BR">
+<head profile="http://www.w3.org/2005/10/profile">
+    <title>Modelo do fluxo de situações dos Processos Judiciais</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+    <meta name="Description" content="Grafo explicativo sobre o fluxo de situações dos processos no 2º Grau." />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="-l" />
+	<meta charset="utf-8">
+
+	<!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8" type="text/javascript"></script>-->
+	<script src="http://d3js.org/d3.v3.js" charset="utf-8" type="text/javascript"></script>
+	<script src="http://d3js.org/queue.v1.min.js"></script>
+	<link href="modelo_fluxo.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<script src="modelo_fluxo.js"></script>
+	<h1>Modelo do fluxo de situações dos Processos Judiciais</h1>
+	<h3>
+		Para obter informações sobre as situações ou transições, passe o mouse.<br>
+		Para obter detalhes, clique nas situações ou transições<br>
+		Para facilitar a visualização, pode-se arrastar os nodos para reposicioná-los.
+	</h3>
+	<div id="nocontent">
+		<h1>Infelizmente o seu navegador não é compatível com esta funcionalidade.</h1>
+
+		<div>Utilize <a href="http://www.google.com/chrome/">Google
+		Chrome</a>, <a href="http://www.mozilla.org/firefox">Mozilla Firefox</a>
+		ou <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">Microsoft Internet Explorer (v9 ou acima)</a> para exibir o grafo.</div>
+	</div>  
+  
+	<div id="graph"></div>
+
+
+	<div id="sidepanel">
+		<!--<div id="title">
+		  <img id="helpIcon" 
+			   src="ajuda.png" title="Clique para ajuda" 
+			   onClick="toggleDiv('help');"/>
+		</div>-->
+		<div id="info" class="panel_off">
+			<div id='heading-info' class="heading title">
+				<img class="icon" src="close.png" style="float: right;" 
+					onClick="toggleDiv('info');"/>
+				<div id='heading-text'>
+					<span id='heading-text-span'>Insira um título</span>
+				</div>
+			</div>
+			<div id='content-info' class='content info' onClick="toggleDiv('info');">
+				<div id='content-text'>Insira um conteúdo</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="menu"></div>
+	
+	<!--<div id="painelInfo" class="panel_off">
+		<div id="cover">
+			<img class="action" onclick="selectSituacao(29,true);" title="centraliza o grafo no nodo" style="top: 280px;" height="45" width="45" src="focus.svg">
+		</div>
+	</div>-->
+
+	<div id='legend' class='legend'>
+		<div class='legend-title'>Legenda das situações</div>
+		<!--<div class='legend-scale'>
+		  <ul class='legend-labels'>
+			<li><span style='background:#F1EEF6;'></span>0 - 20%</li>
+			<li><span style='background:#BDC9E1;'></span>40%</li>
+			<li><span style='background:#74A9CF;'></span>60%</li>
+			<li><span style='background:#2B8CBE;'></span>80%</li>
+			<li><span style='background:#045A8D;'></span>100%</li>
+		  </ul>
+		</div>-->
+		<div id='legend-content' class='legend-scale'>	</div>
+		<!--<div class='legend-source'>Source: <a href="#link to source">Name of source</a></div>-->
+	</div>
+	
+	<div id="tooltip" class="panel_off">
+	</div>	
+  
+	<div id="faq" class="panel_off">
+		<div id="close_faq">
+		  <img src="close.png" onClick="toggleDiv('faq');"/>
+		</div>
+		<dl>
+
+			<dt>Como funciona o fluxo de situações?</dt>
+
+			<dd>O fluxo de situações é uma nova abordagem para a melhora
+			das estatísticas no 2º Grau.
+			Esta abordagem foca na situação do processo e nos eventos
+			que podem ocorrer sobre os processos nestas situações.
+			Os eventos previstos alteram a situação dos processos para uma nova 
+			situação.
+			</dd>
+
+			<dt>Como é realizada a implementação do fluxo?</dt>
+			<dd>Por meio do grafo de situações é possível verificar 
+			quais as ações são esperadas dada a situação dos processos
+				<ol style="margin: 0px;">
+					<li> Notem que são desenhadas apenas as ações consideradas consistentes.</li>
+
+					<li>Na implementação de fato, são incluídas algumas ações inconsistentes
+					para que se melhore a apuração das estatísticas.</li>
+
+				</ol>
+			</dd>
+		</dl>
+	</div>	
+
+</body>
+</html>

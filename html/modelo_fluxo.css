@@ -1,0 +1,569 @@
+/* HREF links */
+
+title{
+	text-align: center;
+	font-size: 60px;
+	color: MidnightBlue;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+h1 {
+	text-align: center;
+	font-size: 2em;
+	color: navy;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+body h3 {
+	font-size: 1.2em;
+	color: #999900;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+a {
+    color: blue;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:visited {
+    color: blue;
+}
+
+/* ....................................................................... */
+/* The top-right side panel and its title child */
+
+div#sidepanel {
+    /*position: absolute;*/
+	/* Garante que o painel fica na mesma posição mesma que se mova a página 
+	(page is scrolled)*/
+	position: fixed;
+    pointer-events: none;
+    top: 120px;
+    right: 0px;
+}
+
+div#title {
+    margin: 4px 2px 6px 0px;
+    border-width: 0px;
+    padding: 0px;
+    text-align: right;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 18px;    
+    line-height: 18px;
+    color: #5D1D4D;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+div#title h1{
+    text-align: center;
+}
+
+div#title img {
+    border-width: 0px;
+    margin: 0px;
+}
+
+img#helpIcon {
+    position: absolute; 
+    right: 6px; 
+    top: 100px; 
+    pointer-events: all; 
+    cursor: help;
+}
+
+div#menu {
+	margin: 0.9em;
+    padding: 0.3em;
+
+    font-family: Georgia, Times New Roman, Times, serif;
+    font-size: 12pt;
+}
+
+/* ....................................................................... */
+/* Classes para ligar/desabilitar toggles dos painéis de informação */
+
+div.panel_off {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+div.panel_on {
+    visibility: visible;
+    pointer-events: all;
+}
+
+div#tooltip.tooltip_on {
+	opacity: .9;
+}
+
+div#tooltip.tooltip_off {
+	opacity: 0;
+}
+
+/* Info boxes */
+
+div#info {
+    width: 320px;
+    margin: 6px;
+    padding: 0.05em;
+	background-color: AliceBlue;
+    border: 3px solid #989970;
+
+    font-family: Georgia, Times New Roman, Times, serif;
+    font-size: 13pt;
+
+    position: absolute;
+    right: 0px;
+    z-index: 801;
+
+	max-height: 550px;
+	/* Garante que se o conteúdo não couber na janela, 
+	que uma barragem de rolagem apareça para acessar o resto do conteúdo */
+	overflow:auto;
+	
+    -moz-transition: visibility 0.8s;
+    -o-transition: visibility 0.8s;
+    -webkit-transition: visibility 0.8s;
+    transition: visibility 0.5s;
+
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    /*border-radius: 10px;*/
+	border-radius: 0.6em 0.6em 0.6em 0.6em;
+
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+div#info ul {
+    margin: 0.5em 0em 0.5em 0em;
+    padding-left: 1.5em;
+    
+}
+
+div#info li {
+    margin: 0em;
+    padding: 0px;
+}
+
+div#info .heading{
+	border-radius: 0.7em 0.7em 0.7em 0.7em;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #328aa4;
+    color: white;
+}
+
+div#faq {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    padding: 4px;
+    width: 860px;
+    height: 600px;
+    overflow-y: auto;
+    z-index: 1002;
+    background: #E5E4D6;
+
+    font-size: 11pt;
+
+    border: solid 1px #aaa;
+    border-radius: 8px;    
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+div#faq dt {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 13pt;    
+    color: #5D1D4D;
+    font-weight: bold;
+    margin-top: .4em;
+}
+
+div#faq dd {
+    font-family: Georgia, Times New Roman, Times, serif;
+    padding-left: 0px;
+    margin-left: 0.7em;
+}
+
+div#close_faq {
+    position: fixed; 
+    margin-left: 820px; 
+    margin-top: 0px;
+    padding: 0px;
+}
+
+
+/* ....................................................................... */
+
+div#nocontent {
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    width: 600px;
+    height: 200px;
+    top: 200px;
+    left: 200px;
+    background: #C3B091;
+    border: solid 2px #a00;
+    border-radius: 8px;    
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 20px;    
+    text-align: center;
+    vertical-align: center;
+    padding: 12px;
+}
+
+div#nocontent h1 {
+    margin: 1em;
+    color: red;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* ....................................................................... */
+/* Painel de detalhes */
+
+div#painelInfo {
+    position: relative;
+    right: 4px;
+    cursor: text;
+    width: 300px;
+    z-index: 1000;
+    background: #E5E4D6;
+    border: solid 1px #aaa;
+    border-radius: 8px;    
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px;    
+    padding: 4px;
+    text-align: right;
+}
+
+div#painelInfo div#cover {
+    text-align: left; 
+    height: 300px;
+}
+
+div#painelInfo div.t {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+div#painelInfo img.cover {
+    margin-bottom: 6px;
+    position: absolute;
+    right: 3px;
+}
+
+div#painelInfo img.action {
+    cursor: pointer;
+    position: absolute;
+}
+
+div#painelInfo div.f {
+    border-top: 1px dotted #8E5981;
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+
+div#painelInfo span.d {
+    font-weight: bold;
+}
+
+div#painelInfo span.c {
+    font-style: italic;
+}
+
+div#painelInfo span.l {
+    font-size: 11px;
+    color: #24553E;
+    font-variant: small-caps;
+}
+
+/* Tooltips */
+div#tooltip {
+  position: absolute;
+  /*text-align: center;*/
+  text-align: left;
+  max-width: 100em;
+  /*
+  width: 60px;
+  height: 28px;*/
+  padding: 4px;    
+  font: 16px sans-serif;
+  background: lightsteelblue;
+  border: 4px;
+  border-radius: 8px;
+  pointer-events: none;         
+}
+
+div#tooltip li {
+    margin: 0em;
+    padding: 0px;
+}
+
+/***********
+* Tabela
+*/
+table {
+	border: 1px solid black;
+	/*border-collapse: collapse;*/
+	/*width: 100%;*/
+	/*margin:1em 0;*/
+}
+
+table, td{
+	font:100% Arial, Helvetica, sans-serif; 
+}
+
+th {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #328aa4;
+    color: white;
+}
+
+tbody tr {
+	cursor: pointer;
+}
+	
+th, td {
+	border: 1px solid #fff;
+	border-bottom: 1px solid #ddd;
+	height: 30px;
+	padding: .5em;
+	text-align:left;
+	/* Tamanho máximo da coluna */
+	max-width:360px
+}
+
+th.left, td.left {
+	text-align: left;
+}
+
+th.center, td.center {
+	text-align: center;
+}
+
+tr {
+	background-color: #e5f1f4;
+}
+/* Diferentes cores para linhas alternadas
+ deve ser definido antes de hover */
+tr:nth-child(even) {background-color: #f8fbfc;}
+
+/* Highlight table rows on mouse over */
+tr:hover {background-color: #ddd;}
+
+tr.selected, td.selected{
+	/*background: #bce774;*/
+	background: DarkOliveGreen;
+	/*background: DarkGoldenrod;*/
+	color: white;
+}
+
+/**********
+*  Legend
+*/
+.legend .series {
+  cursor: pointer;
+}
+
+.legend circle {
+  stroke-width: 2px;
+}
+
+.legend .disabled circle {
+  fill-opacity: 0;
+}
+
+.legend .legend-title {
+	text-align: left;
+	margin-bottom: 8px;
+	font-weight: bold;
+	font-size: 90%;
+}
+
+.legend .legend-scale ul {
+	margin: 0;
+	padding: 0;
+	margin-bottom: 5px;
+	float: left;
+	list-style: none;
+}
+
+.legend .legend-scale ul li {
+	display: block;
+	float: left;
+	width: 50px;
+	margin-bottom: 6px;
+	margin-left: 0;
+	line-height: 18px;
+	text-align: center;
+	font-size: 80%;
+	list-style: none;
+}
+
+.legend ul.legend-labels li span {
+	display: block;
+	float: left;
+	height: 15px;
+	width: 50px;
+	margin-right: 5px;
+    margin-left: 0;
+    border: 1px solid #999;
+}
+
+.legend .legend-source {
+	font-size: 70%;
+	color: #999;
+	clear: both;
+}
+.legend a {
+	color: #777;
+}
+
+/* ....................................................................... */
+/* SVG elements */
+
+div#graph svg {
+    background-color: white;
+}
+
+.link {
+	stroke: #ccc;
+	stroke-width: 1.5px;
+}
+
+.link.selected {
+	stroke: DarkOliveGreen;
+	stroke-width: 3.5px;
+	fill: orange;
+}
+
+.edgepath {
+	cursor: pointer;
+	fill: none;
+	fill-opacity: 0;
+	stroke: SlateBlue;
+	stroke-opacity: 0.6;
+	stroke-width: 2px;
+}
+
+.edgepath.selected {
+	stroke: DarkOliveGreen;
+	stroke-width: 4.5px;
+}
+
+.seta {
+	/* Define cor de preenchimento das setas */
+	/*fill: #ccc;*/
+	fill: none;
+	fill-opacity: 0;
+	/* Define cor de contorno das setas */
+	stroke: SlateBlue;
+	stroke-opacity: 0.6;
+	stroke-width: 3px;
+}
+
+.seta.selected {
+	stroke: DarkOliveGreen;
+	stroke-width: 4.5px;
+}
+
+.node {
+	/* Apresenta cursor de movimentação quando o mouse aponta para um nodo fixo */
+	/*cursor: move;*/
+	cursor: grab;
+	stroke: #00CCCC;
+	stroke-width: 2px;
+}
+
+.node.fixed {
+	/* Apresenta cursor de movimentação quando o mouse aponta para um nodo fixo */
+	cursor: grab;
+	fill: #f00;
+}
+
+.node.selected {
+	fill: #f00;
+	stroke: #666600;
+	stroke-width: 5px;
+}
+
+.node.reachable {
+	fill: #f00;
+	stroke: DarkGoldenrod;
+	stroke-width: 3.5px;
+}
+
+.node_legend {
+	stroke: #00CCCC;
+	stroke-width: 2px;
+}
+
+.node_legend.selected {
+	fill: #f00;
+	stroke: #666600;
+	stroke-width: 5px;
+}
+
+.node_legend.reachable {
+	fill: #f00;
+	stroke: DarkGoldenrod;
+	stroke-width: 3.5px;
+}
+
+.nodelabel {
+	cursor: pointer;
+	stroke: black;
+}
+
+.edgelabel {
+	cursor:pointer;
+	font-size: 16;
+	fill: #000;
+}
+
+.edge_text_path {
+	cursor:pointer;
+}
+
+circle {
+    /*cursor: crosshair;*/
+    fill: #EBC763;
+}
+
+circle.level1 {
+    stroke: #f00;
+}
+
+circle.level2 {
+    fill-opacity: 0.8;
+    stroke-opacity: 0.8;
+    stroke: #777;
+}
+
+circle.level3 {
+    fill-opacity: 0.5;
+    stroke-opacity: 0.5;
+}
+
+circle.sibling {
+    /*fill: blue;*/
+    fill: #455EE8;
+}
+
+circle.main {
+    /*fill: red;*/
+    fill: #732A9A;
+    fill-opacity: 1.0;
+}

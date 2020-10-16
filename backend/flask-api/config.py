@@ -20,16 +20,9 @@ class Config:
     MAINTAINER = 'Desafio 2 Time 16'
     METRICS_PORT = int(getenv('METRICS_PORT'))
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_BINDS = {
-        'sanjus': URL(**{
-            'drivername': 'postgres+psycopg2',
-            'host': getenv('POSTGRES_HOST'),
-            'port': getenv('POSTGRES_PORT'),
-            'username': getenv('POSTGRES_USERNAME'),
-            'password': getenv('POSTGRES_PASS') ,
-            'database': getenv('POSTGRES_DATABASE')
-        })
-    }
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    CSRF_ENABLED = True
+    CORS_HEADERS = 'Content-Type'
 
 
 class DevelopmentConfig(Config):

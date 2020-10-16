@@ -1,4 +1,4 @@
-x-sanjus-build: &sanjus-build  
+x-sanjus-build: &sanjus-build
   context: ./backend
   dockerfile: Dockerfile
 x-sanjus-depends-on: &sanjus-depends-on
@@ -17,13 +17,22 @@ services:
     ports:
       - 5433:5432
 
+  sanjus-init:
+    env_file: docker/.env
+    build: *sanjus-build
+    container_name: sanjus_init
+    command: ["python", "manage.py", "db", "upgrade"]
+    depends_on: *sanjus-depends-on
+
   sanjus:
     env_file: docker/.env
     build: *sanjus-build
     container_name: sanjus_backend
     command: ["gunicorn", "app"]
     restart: unless-stopped
-    depends_on: *sanjus-depends-on
+    depends_on: 
+      - postgres
+      - sanjus-init
     ports:
       - 5002:5002
       - 5003:5003

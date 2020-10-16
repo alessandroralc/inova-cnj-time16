@@ -45,7 +45,7 @@ class GrupoSituacao(db.Model):
 class FluxoMovimentos(db.Model):
     __tablename__ = 'tb_fluxo'
 
-    id_fluxo_movimento = db.Column(db.String(255), nullable=False)
+    id_fluxo_movimento = db.Column(db.String(255), nullable=False, primary_key=True)
     id_situacao_origem = db.Column(db.Integer, db.ForeignKey(
         'tb_desc_situacao.id_situacao'), nullable=False)
     id_movimento = db.Column(db.Integer, db.ForeignKey(

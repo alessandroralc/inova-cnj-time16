@@ -6,6 +6,7 @@ load_dotenv()
 from app import application
 from src.persistencia.database import db
 
+import src.entidades.modelo_fluxo
 
 migrate = Migrate(application, db)
 manager = Manager(application)

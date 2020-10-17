@@ -1,0 +1,24 @@
+"id_situacao","ds_situacao","cd_situacao","ind_principal","ind_ri"
+1,Início de fluxo,I,S,S
+11,Pendente com o Presidente,PP,S,N
+21,Pendente de conclusão para relatar,PCR,S,S
+24,Processo Suspenso ou Sobrestado,PSS,S,S
+26,Remetido à 1ª Instância para cumprimento de diligência,DLG,S,N
+28,Remetido ao MPT para emissão de parecer,MPT,S,N
+31,Recebido para prosseguir após cumprimento de diligência,RDLG,S,N
+33,Recebido após envio ao MPT,RMPT,S,N
+41,Concluso para o presidente,CP,S,S
+42,Concluso para Decisão ou Voto,CDV,S,N
+43,Concluso para RI,CRI,N,S
+51,Pendente de Conclusão para Revisar,PCRV,S,S
+61,Concluso para revisar,CRV,S,S
+71,Aguardando pauta em secretaria,APS,S,S
+81,Incluído em pauta,IP,S,S
+91,Sessão Iniciada,SI,S,S
+101,Julgado em sessão aguardando movimentos,JSAM,S,S
+102,Processo com Decisão Interlocutória,DI,S,S
+111,Processo com Decisão Terminativa,DT,S,S
+121,Admissibilidade,A,S,N
+131,Processo com Decisão de Admissibilidade,DA,S,N
+141,Baixado,B,S,S
+151,Arquivado definitivamente,ARQ,S,N

@@ -9,6 +9,7 @@ class Evento(db.Model):
     ds_evento = db.Column(db.String(255), nullable=False)
     cd_evento = db.Column(db.String(30), nullable=False)
     ind_fluxo_ri = db.Column(db.String(1), nullable=False)
+    ind_tipo_especial = db.Column(db.String(1), nullable=True)
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

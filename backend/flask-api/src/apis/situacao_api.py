@@ -1,16 +1,16 @@
 from flask import request, Response
 from flask_restful import Resource
-from ..servicos import evento_servico
+from ..servicos import situacao_servico
 from ..utils import helper
 import json
 
 
-class EventoAPI(Resource):
+class SituacaoAPI(Resource):
 
     def get(self):
         try:
-            retorno = [helper.serializar(evento)
-                       for evento in evento_servico.listar_eventos()]
+            retorno = [helper.serializar(situacao)
+                       for situacao in situacao_servico.listar_situacoes()]
             return Response(json.dumps(retorno), status=200)
         except Exception as e:
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
@@ -18,4 +18,4 @@ class EventoAPI(Resource):
 
 def configure_api(api):
     api.add_resource(
-        EventoAPI, '/eventos')
+        SituacaoAPI, '/situacoes')

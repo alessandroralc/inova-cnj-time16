@@ -6,8 +6,8 @@ engine = create_engine(
 df_situacao = pd.read_csv('carga_situacoes.csv', sep=',')
 df_situacao['sg_tribunal'] = 'TRT3'
 df_situacao['sg_grau'] = 'G2'
-df_situacao.to_sql('tb_desc_situacao', con=engine,
-                   if_exists='append', index=False)
+#df_situacao.to_sql('tb_desc_situacao', con=engine,
+#                  if_exists='append', index=False)
 
 df_eventos = pd.read_csv('carga_eventos_fluxo.csv', sep=',')
 df_eventos.info()
@@ -58,13 +58,13 @@ def carga_evento(registro):
     return carga_movimento(registro, id_evento)
 
 
-df_eventos.apply(carga_evento, axis=1)
+#df_eventos.apply(carga_evento, axis=1)
 
 df_grp_situacoes = pd.read_csv('carga_grp_situacoes.csv', sep=',')
 df_grp_situacoes['sg_tribunal'] = 'TRT3'
 df_grp_situacoes['sg_grau'] = 'G2'
-df_grp_situacoes.to_sql('tb_desc_grp_situacao', con=engine,
-                        if_exists='append', index=False)
+#df_grp_situacoes.to_sql('tb_desc_grp_situacao', con=engine,
+#                        if_exists='append', index=False)
 
 df_fluxo = pd.read_csv('carga_fluxo.csv', sep=',')
 df_fluxo['id_grp_situacao_origem'].fillna(9999.0, inplace=True)

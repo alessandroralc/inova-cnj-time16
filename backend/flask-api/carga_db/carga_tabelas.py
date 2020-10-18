@@ -65,3 +65,20 @@ df_grp_situacoes['sg_tribunal'] = 'TRT3'
 df_grp_situacoes['sg_grau'] = 'G2'
 df_grp_situacoes.to_sql('tb_desc_grp_situacao', con=engine,
                         if_exists='append', index=False)
+
+df_fluxo = pd.read_csv('carga_fluxo.csv', sep=',')
+df_fluxo['id_grp_situacao_origem'].fillna(9999.0, inplace=True)
+df_fluxo = df_fluxo[df_fluxo['cd_evento'] != 'JSAM']
+
+
+def carga_fluxo(registro):
+    id_evento = verificar_registro(
+        'select id_evento as id from tb_desc_evento where cd_evento = %s', registro['cd_evento'])
+    sql = """Insert into tb_fluxo values (nextval('tb_fluxo_id_fluxo_seq'), %s, %s, %s, %s, %s, %s, %s, %s, %s)              
+    """
+    with engine.connect() as conn:
+        conn.execute(sql, (registro['id_situacao_origem'], registro['id_situacao_destino'], registro['ind_consistente'],
+                           registro['ind_efetiva'], registro['id_grp_situacao_origem'], 'G2', 'TRT3', id_evento, registro['ind_fluxo_ri']))
+
+
+df_fluxo.apply(carga_fluxo, axis=1)

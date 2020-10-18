@@ -170,10 +170,7 @@ def carregar_eventos(processo, movimentos):
     if mov.get('tipoDecisao'):
       ind_tipo_especial = 'M' if mov.get('tipoDecisao') == 0 else 'C'   
     ind_tipo_especial = processo.ind_presidencia if processo.ind_presidencia else ind_tipo_especial
-    if mov.get('complementoNacional') and len(mov.get('complementoNacional')) > 1:
-      carregar_movimento_com_complemento(processo, mov, ind_tipo_especial)      
-    else:
-      carregar_movimento_sem_complemento(processo, mov, ind_tipo_especial)
+    carregar_movimento_sem_complemento(processo, mov, ind_tipo_especial)
 
 
 

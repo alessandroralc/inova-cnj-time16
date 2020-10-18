@@ -12,14 +12,14 @@ begin
 	ind_valida, 
 	ind_consistente, 
 	ind_efetiva,
-	'TRT3',
-	'G2',
+	sg_tribunal,
+	sg_grau,
 	dta_ocorrencia,
 	nu_seq_evento,
 	id_situacao_origem,	
 	id_evento
 	from (
-	WITH RECURSIVE hist_situacao(cd_processo, nu_autuacao, nu_seq_evento, dta_ocorrencia, id_situacao_origem, id_evento, id_situacao_destino, cd_classe, ind_valida, ind_consistente, ind_efetiva) AS (		
+	WITH RECURSIVE hist_situacao(cd_processo, nu_autuacao, nu_seq_evento, dta_ocorrencia, id_situacao_origem, id_evento, id_situacao_destino, cd_classe, ind_valida, ind_consistente, ind_efetiva,  sg_grau, sg_tribunal) AS (		
 		select distinct cd_processo,
 		1 as nu_autuacao,
 		0 as nu_seq_evento,
@@ -30,7 +30,9 @@ begin
 		cd_classe as cd_classe,
 		'S' as ind_valida,
 		'S' as ind_consistente,
-		'N' as ind_efetiva
+		'N' as ind_efetiva, 
+		sg_grau,
+		sg_tribunal
 		from sanjus.tb_processo a
 	union all
 	/* Passo recursivo:
@@ -61,7 +63,9 @@ begin
 		-- a transição é inconsistente
 		coalesce(tv.ind_consistente, 'N') as ind_consistente,
 		-- registra se a transição é efetiva para a alteração da situação do processo
-		coalesce(tv.ind_efetiva, 'N') as ind_efetiva
+		coalesce(tv.ind_efetiva, 'N') as ind_efetiva,
+		hs.sg_grau,
+		hs.sg_tribunal
 	from (select he1.cd_processo, he1.dt_ocorrencia, he1.id_evento, 
 	        ev.ds_evento, 1 as nu_autuacao, 
 	        rank() over (partition by he1.cd_processo order by he1.dt_ocorrencia)::int4 as nu_seq_evento,

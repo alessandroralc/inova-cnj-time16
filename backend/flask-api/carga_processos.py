@@ -48,10 +48,10 @@ def pesquisar_processos_elastic(siglaTribunal, grau, start, end):
                         "bool": {
                             "must": [
                                 {
-                                    "term": {"siglaTribunal.keyword": "TRT3"}
+                                    "term": {"siglaTribunal.keyword": siglaTribunal}
                                 },
                                 {
-                                    "term": {"grau.keyword": "G2"}
+                                    "term": {"grau.keyword": grau}
                                 }
                             ]
                         }

@@ -109,12 +109,13 @@ class HistoricoSituacao(db.Model):
     cd_processo = db.Column(db.String(100), nullable=False)
     cd_classe_judicial = db.Column(db.String(20), nullable=False)
     nu_autuacao = db.Column(db.Integer, nullable=False)
+    nu_seq_evento = db.Column(db.Integer, nullable=False)
     id_situacao_origem = db.Column(db.Integer, db.ForeignKey(
-        'tb_desc_situacao.id_situacao'), nullable=False)
+        'tb_desc_situacao.id_situacao'), nullable=True)
     id_situacao_destino = db.Column(db.Integer, db.ForeignKey(
-        'tb_desc_situacao.id_situacao'), nullable=False)
-    id_movimento = db.Column(db.Integer, db.ForeignKey(
-        'tb_desc_movimento.id_movimento'), nullable=False)
+    'tb_desc_situacao.id_situacao'), nullable=False)
+    id_evento = db.Column(db.Integer, db.ForeignKey(
+    'tb_desc_evento.id_evento'), nullable=True)
     dt_ocorrencia = db.Column(db.DateTime, nullable=False)
     ind_valida = db.Column(db.String(1), nullable=False)
     ind_consistente = db.Column(db.String(1), nullable=False)
@@ -152,6 +153,7 @@ class Processo(db.Model):
     sg_tribunal = db.Column(db.String(30), nullable=False)
     sg_grau = db.Column(db.String(30), nullable=False)
     ind_presidencia = db.Column(db.String(1), nullable=False)
+    dt_autuacao = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

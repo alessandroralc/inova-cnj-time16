@@ -86,6 +86,7 @@ def carregar_processo(registro):
       ds_orgao_julgador= registro['_source']['dadosBasicos']['orgaoJulgador']['nomeOrgao'],
       sg_tribunal= registro['_source']['siglaTribunal'],
       sg_grau= registro['_source']['grau'],
+      dt_autuacao = datetime.strptime(registro['_source']['dadosBasicos']['dataAjuizamento'], '%Y%m%d%H%M%S'),
       ind_presidencia= 'S' if registro['_source']['dadosBasicos']['orgaoJulgador']['codigoOrgao'] == COD_OJ_PRES else 'N'
     )  
 

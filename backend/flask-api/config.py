@@ -14,11 +14,11 @@ if isfile(_ENV_FILE):
 class Config:
     APP_VERSION = ''
     SECRET_KEY = getenv('SECRET_KEY')
-    APP_PORT = int(getenv('APP_PORT'))
+    APP_PORT = int(getenv('APP_PORT')) if getenv('APP_PORT') else 9999
     DEBUG = (getenv('DEBUG') or 'True')
     GIT_REPO = 'https://github.com/lucasbibianot/inova-cnj-time16'
     MAINTAINER = 'Desafio 2 Time 16'
-    METRICS_PORT = int(getenv('METRICS_PORT'))
+    METRICS_PORT = int(getenv('METRICS_PORT')) if getenv('METRICS_PORT') else 9991
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     CSRF_ENABLED = True

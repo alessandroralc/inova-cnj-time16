@@ -1,7 +1,7 @@
 from os import getenv
 from flask import Flask
 from flask_restful import Api
-from config import config, DataSources
+from config import config
 from .apis import configure_api
 from flask_sqlalchemy import SQLAlchemy
 from .persistencia.database import configure_database

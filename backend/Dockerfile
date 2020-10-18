@@ -14,7 +14,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+RUN python -m pip install --upgrade pip \
+    && pip install -r requirements.txt
 
 WORKDIR /home/flask-api/
 

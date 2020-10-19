@@ -3,7 +3,6 @@ from flask_restful import Resource
 from ..servicos import evento_servico
 from ..utils import helper
 import json
-import traceback
 
 
 class EventoAPI(Resource):
@@ -14,43 +13,9 @@ class EventoAPI(Resource):
                        for evento in evento_servico.listar_eventos()]
             return Response(json.dumps(retorno), status=200)
         except Exception as e:
-            traceback.print_exc()
-            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
-
-    def post(self):
-        try:
-            body = json.loads(request.get_data().decode('UTF-8'))
-            if body:
-                id_evento = evento_servico.incluir_evento(body)
-                return Response(json.dumps({"id_evento": id_evento}), status=201)
-        except Exception as e:
-            traceback.print_exc()
-            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
-
-    def delete(self):
-        try:
-            body = json.loads(request.get_data().decode('UTF-8'))
-            if body:
-                evento_servico.remover_evento(body.get('id_evento'))
-                return Response('Registro excluído com sucesso', status=200)
-        except Exception as e:
-            traceback.print_exc()
-            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
-
-class EventoIdAPI(Resource):
-
-    def get(self, id_evento):
-        try:
-            retorno = [helper.serializar(evento)
-                       for evento in evento_servico.listar_eventos_id(id_evento)]
-            return Response(json.dumps(retorno), status=200)
-        except Exception as e:
-            traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
 
 def configure_api(api):
     api.add_resource(
-        EventoAPI, '/api/v1.0/evento')
-    api.add_resource(
-        EventoIdAPI, '/api/v1.0/evento/<int:id_evento>')
+        EventoAPI, '/eventos')

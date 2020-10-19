@@ -3,7 +3,6 @@ x-sanjus-build: &sanjus-build
   dockerfile: Dockerfile
 x-sanjus-depends-on: &sanjus-depends-on
   - postgres
-  - redis
 
 version: "3.7"
 services:
@@ -15,31 +14,23 @@ services:
       POSTGRES_PASSWORD: inovacnj
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./pg_docker:/docker-entrypoint-initdb.d
     ports:
       - 5433:5432
-    
-  redis:
-    image: redis:3.2
-    container_name: sanjus_cache
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis:/data
 
   sanjus-init:
     env_file: docker/.env
     build: *sanjus-build
     container_name: sanjus_init
-    command: ["python", "manage.py", "db", "upgrade"]
-    depends_on: *sanjus-depends-on
+    command: sh -c "./wait && ./migrate.sh"
+    depends_on:
+      - postgres
+    environment:
+      - WAIT_HOSTS=postgres:5432
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
 
-  sanjus-worker:
-    env_file: docker/.env
-    build: *sanjus-build
-    container_name: sanjus_worker
-    command: ["celery", "--app", "app.celery", "worker"]
-    depends_on: *sanjus-depends-on
 
   sanjus:
     env_file: docker/.env
@@ -47,7 +38,7 @@ services:
     container_name: sanjus_backend
     command: ["gunicorn", "app"]
     restart: unless-stopped
-    depends_on:
+    depends_on: 
       - postgres
       - sanjus-init
     ports:
@@ -56,4 +47,3 @@ services:
 
 volumes:
   pgdata:
-  redis:

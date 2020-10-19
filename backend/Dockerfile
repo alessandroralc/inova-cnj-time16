@@ -21,14 +21,4 @@ WORKDIR /home/flask-api/
 
 COPY ./flask-api .
 
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait wait
-RUN chmod +x wait
-
-COPY migrate.sh migrate.sh
-RUN chmod +x migrate.sh
-
-
-
-
-
 EXPOSE 5002

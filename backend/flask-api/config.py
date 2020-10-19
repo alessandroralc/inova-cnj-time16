@@ -23,6 +23,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     CSRF_ENABLED = True
     CORS_HEADERS = 'Content-Type'
+    CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+    CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 
 
 class DevelopmentConfig(Config):

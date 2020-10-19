@@ -18,8 +18,8 @@ depends_on = None
 
 def upgrade():
     op.execute("""
-    update tb_desc_movimento
-    set id_evento = (select id_evento from tb_desc_evento where cd_evento = 'CDESP')
+    update sanjus.tb_desc_movimento
+    set id_evento = (select id_evento from sanjus.tb_desc_evento where cd_evento = 'CDESP')
     where cd_tpu_movimento = '51'    
     """)
 

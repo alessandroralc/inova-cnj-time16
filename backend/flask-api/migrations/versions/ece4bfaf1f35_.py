@@ -17,7 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.execute('alter table tb_fluxo alter column id_fluxo_movimento type int4 USING id_fluxo_movimento::integer')
+    op.execute('alter table sanjus.tb_fluxo alter column id_fluxo_movimento type int4 USING id_fluxo_movimento::integer')
 
 
 def downgrade():

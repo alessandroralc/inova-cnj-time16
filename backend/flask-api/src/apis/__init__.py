@@ -10,7 +10,6 @@ from .tribunal_api import configure_api as tribunal_api
 from .grupo_api import configure_api as grupo_api
 
 
-
 def configure_api(application, api, configuracao):
     configure_health_check(application, configuracao)
     metrics = GunicornPrometheusMetrics(app=application)
@@ -22,4 +21,3 @@ def configure_api(application, api, configuracao):
     carregar_processos_api(api)
     tribunal_api(api)
     grupo_api(api)
-

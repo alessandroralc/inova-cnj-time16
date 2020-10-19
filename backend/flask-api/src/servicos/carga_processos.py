@@ -4,36 +4,14 @@ from elasticsearch import Elasticsearch
 from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
-load_dotenv()
-
-
-class Config:
-    APP_VERSION = ''
-    SECRET_KEY = os.getenv('SECRET_KEY')
-    APP_PORT = 9999
-    DEBUG = (os.getenv('DEBUG') or 'True')
-    GIT_REPO = 'https://github.com/lucasbibianot/inova-cnj-time16'
-    MAINTAINER = 'Desafio 2 Time 16'
-    METRICS_PORT = 9991
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
-    CSRF_ENABLED = True
-    CORS_HEADERS = 'Content-Type'
-
-def get_configuracao():  
-  return Config
-
-application = Flask(__name__)
-application.config.from_object(get_configuracao())
-db = SQLAlchemy(application)
-
+from ..persistencia.database import db
 from src.entidades.modelo_fluxo import Processo
-from src.entidades.modelo_fluxo import ProcessoEvento
-from src.servicos import processo_servico
+from . import processo_servico
+from ..celery.celery_init import celery
 
 
 COD_OJ_PRES = 72819
+
 
 def pesquisar_processos_elastic(siglaTribunal, grau, start, end):
   es = Elasticsearch([{'host': os.getenv('HOST_ELASTIC'), 'port': os.getenv('PORT_ELASTIC')}],
@@ -62,19 +40,13 @@ def pesquisar_processos_elastic(siglaTribunal, grau, start, end):
   return response
 
 
-def retornar_evento(ind_tipo_especial, siglaTribunal, grau, mov_json):
-  pass
-
-
 def retornar_processo(cd_processo):
-    return db.session.query(Processo).filter(
-        Processo.cd_processo == cd_processo).first()
+    return processo_servico.retornar_processo(cd_processo)
 
 
 def persistir_processo(processo):
   if retornar_processo(processo.cd_processo) is None:  
-    db.session.add(processo)
-    db.session.commit()
+    processo_servico.inserir_processo(processo)    
 
 
 def carregar_processo(registro):
@@ -174,16 +146,17 @@ def carregar_eventos(processo, movimentos):
     carregar_movimento_sem_complemento(processo, mov, ind_tipo_especial)
 
 
-
-if __name__ == "__main__":
-  total = pesquisar_processos_elastic('TRT3', 'G2', 0, 1)['hits']['total']['value']
+@celery.task()
+def carregar_dados_processos(tribunal, instancia):
+  print('Iniciando carga')
+  total = pesquisar_processos_elastic(tribunal, instancia, 0, 1)['hits']['total']['value']
   tamanho_pag = 50 if total > 50 else total
   paginas = total / tamanho_pag
   resto = total % tamanho_pag
   reg_ini = 0
   reg_fim = tamanho_pag
   for i in range(0, round(paginas)):
-    resp = pesquisar_processos_elastic('TRT3', 'G2', reg_ini, reg_fim)
+    resp = pesquisar_processos_elastic(tribunal, instancia, reg_ini, reg_fim)
     for registro in resp['hits']['hits']:
       processo = carregar_processo(registro)
       persistir_processo(processo)
@@ -191,3 +164,5 @@ if __name__ == "__main__":
     reg_ini += tamanho_pag
     reg_fim = (tamanho_pag + resto if i == paginas else tamanho_pag)
     
+if __name__ == "__main__":
+    carregar_dados_processos('TRT3', 'G2')

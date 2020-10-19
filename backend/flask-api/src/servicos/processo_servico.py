@@ -3,9 +3,8 @@ from ..entidades.modelo_fluxo import Processo
 from ..persistencia.database import db
 
 
-def inserir_processo(processo):
+def inserir_processo(processo, app):
     db.session.add(processo)
-    db.session.commit()
 
 
 def retornar_processo(cd_processo):

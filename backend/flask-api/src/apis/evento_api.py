@@ -3,7 +3,6 @@ from flask_restful import Resource
 from ..servicos import evento_servico
 from ..utils import helper
 import json
-import traceback
 
 
 class EventoAPI(Resource):

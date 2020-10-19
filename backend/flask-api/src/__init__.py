@@ -6,6 +6,7 @@ from .apis import configure_api
 from flask_sqlalchemy import SQLAlchemy
 from .persistencia.database import configure_database
 
+
 dataSource = 'datasource'
 
 

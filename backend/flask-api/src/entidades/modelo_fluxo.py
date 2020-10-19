@@ -39,6 +39,8 @@ class Situacao(db.Model):
     ind_ri = db.Column(db.String(1), nullable=False)
     sg_tribunal = db.Column(db.String(30), nullable=False)
     sg_grau = db.Column(db.String(30), nullable=False)
+    fl_inicio = db.Column(db.String(1), nullable=False)
+    fl_fim = db.Column(db.String(1), nullable=False)
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

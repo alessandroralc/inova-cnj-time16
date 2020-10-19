@@ -72,7 +72,8 @@ Exemplo de json para o `DELETE`:
 |GET|Obter todas os fluxos|/api/v1.0/fluxo|
 |GET|Obter um fluxo especifico|/api/v1.0/fluxo`<int:id_fluxo>`|
 |GET|Obter os fluxos de um determinado Tribunal e Grau|/api/v1.0/fluxo/`<string:cd_tribunal>`/`<string:cd_grau>`|
-|GET|Obter os fluxos de um determinado Tribunal e Grau, que sejam consistententes ou não (formato gráfico de rede)|/api/v1.0/fluxo/rede/`<string:cd_tribunal>`/`<string:cd_grau>`/`<string:ind_consistente>`|
+|GET|Obter os fluxos de um determinado Tribunal e Grau, que sejam consistententes ou não (formato de árvore)|/api/v1.0/fluxo/arvore/`<string:cd_tribunal>`/`<string:cd_grau>`/`<string:ind_consistente>`|
+`<string:cd_grau>`/`<string:ind_consistente>`|
 |POST|Persistir um novo fluxo|/api/v1.0/fluxo|
 |DELETE|Remover um fluxo|/api/v1.0/fluxo|
 

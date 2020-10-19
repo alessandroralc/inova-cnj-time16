@@ -1,6 +1,8 @@
 import re
+from typing import Dict
 from ..entidades.modelo_fluxo import FluxoMovimentos
 from ..persistencia.database import db
+import sys
 
 
 def incluir_fluxo(parametros):
@@ -80,3 +82,86 @@ def gerar_transicoes_rede(cd_tribunal, cd_instancia, ind_consistente):
                  'transition_cd': row[4],
                  'transition_ds': row[5]
                  } for row in rs]
+
+
+def situacao_possui_filhos(cd_tribunal, cd_instancia, ind_consistente, id_situacao):
+    with db.engine.connect() as conn:
+        sql = """
+        select count(*)
+        from tb_fluxo fluxo
+        where fluxo.sg_grau = %s
+        and fluxo.sg_tribunal = %s
+        and fluxo.ind_consistente = %s      
+        and fluxo.id_situacao_origem = %s
+        and fluxo.id_situacao_origem <> fluxo.id_situacao_destino
+        """
+        rs = conn.execute(sql, (cd_instancia, cd_tribunal,
+                                ind_consistente, id_situacao))
+        return rs.fetchall()
+
+
+def recuperar_transicao_arvore(cd_tribunal, cd_instancia, ind_consistente, id_situacao=None):
+
+    with db.engine.connect() as conn:
+        sql = """
+        select distinct 
+        stdest.cd_situacao  as cd_situacao_dest,
+        stdest.ds_situacao  as ds_situacao_dest,
+        fluxo.id_situacao_destino,
+        fluxo.id_situacao_origem
+        from sanjus.tb_fluxo fluxo
+        join sanjus.tb_desc_situacao stori on fluxo.id_situacao_origem = stori.id_situacao
+        join sanjus.tb_desc_situacao stdest on fluxo.id_situacao_destino = stdest.id_situacao 
+        join sanjus.tb_desc_evento ev on (fluxo.id_evento = ev.id_evento)
+        where fluxo.sg_grau = %s
+        and fluxo.sg_tribunal = %s
+        and fluxo.ind_consistente = %s  
+        {0}
+        """
+        valor_parametro = ''
+        if id_situacao:
+            sql = sql.format(
+                "and fluxo.id_situacao_origem = %s and fluxo.id_situacao_origem <> fluxo.id_situacao_destino ")
+            valor_parametro = id_situacao
+        else:
+            sql = sql.format("and stori.fl_inicio = %s")
+            valor_parametro = 'S'
+        rs = conn.execute(sql, (cd_instancia, cd_tribunal,
+                                ind_consistente, valor_parametro))
+        return rs.fetchall()
+
+
+def gerar_transicoes_arvore(cd_tribunal, cd_instancia, ind_consistente):
+    sys.setrecursionlimit(15000)
+
+    transicoes_inicio = recuperar_transicao_arvore(
+        cd_tribunal, cd_instancia, ind_consistente)
+    id_inicio = transicoes_inicio[0][3]
+    deep = 5
+    return {'cd_situacao': 'I',
+            'ds_situacao': 'Início', 
+            'children': funcao_recursiva(cd_tribunal, cd_instancia,
+                                         ind_consistente, id_inicio, None, deep, 1)
+            }
+
+
+def funcao_recursiva(cd_tribunal, cd_instancia, ind_consistente, id_situacao, linha, deep, nivel_atual):
+    filhos = situacao_possui_filhos(
+        cd_tribunal, cd_instancia, ind_consistente, id_situacao)
+
+    if filhos[0][0] > 0 and nivel_atual <= deep:
+        transicoes_destino = recuperar_transicao_arvore(
+            cd_tribunal, cd_instancia, ind_consistente, id_situacao)
+        lista = []
+        for row in transicoes_destino:
+            lista_filhos = funcao_recursiva(
+                cd_tribunal, cd_instancia, ind_consistente, row[2], row, deep, nivel_atual+1)
+            lista.append({'cd_situacao': row[0],
+                          'ds_situacao': row[1],
+                          'children': lista_filhos
+                          })
+        return lista
+    else:
+        return {'cd_situacao': linha[0],
+                'ds_situacao': linha[1]
+                }

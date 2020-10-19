@@ -73,6 +73,18 @@ class FluxoDirRede(Resource):
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
 
+
+class FluxoDirArvore(Resource):
+
+    def get(self, cd_tribunal, cd_grau, ind_consistente):
+        try:
+            retorno = fluxo_servico.gerar_transicoes_arvore(cd_tribunal, cd_grau, ind_consistente)
+            return Response(json.dumps(retorno), status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
+
 def configure_api(api):
     api.add_resource(
         FluxoAPI, '/api/v1.0/fluxo')
@@ -82,3 +94,5 @@ def configure_api(api):
         FluxoFiltroAPI, '/api/v1.0/fluxo/<string:cd_tribunal>/<string:cd_grau>')
     api.add_resource(
         FluxoDirRede, '/api/v1.0/fluxo/rede/<string:cd_tribunal>/<string:cd_grau>/<string:ind_consistente>')        
+    api.add_resource(
+        FluxoDirArvore, '/api/v1.0/fluxo/arvore/<string:cd_tribunal>/<string:cd_grau>/<string:ind_consistente>')   

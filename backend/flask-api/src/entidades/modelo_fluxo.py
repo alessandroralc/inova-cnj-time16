@@ -39,6 +39,10 @@ class Situacao(db.Model):
     ind_ri = db.Column(db.String(1), nullable=False)
     sg_tribunal = db.Column(db.String(30), nullable=False)
     sg_grau = db.Column(db.String(30), nullable=False)
+    fl_inicio = db.Column(db.String(1), nullable=False)
+    fl_fim = db.Column(db.String(1), nullable=False)
+    id_grupo = db.Column(db.Integer, db.ForeignKey(
+        'tb_desc_grp_situacao.id_grupo'), nullable=True)
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -113,9 +117,9 @@ class HistoricoSituacao(db.Model):
     id_situacao_origem = db.Column(db.Integer, db.ForeignKey(
         'tb_desc_situacao.id_situacao'), nullable=True)
     id_situacao_destino = db.Column(db.Integer, db.ForeignKey(
-    'tb_desc_situacao.id_situacao'), nullable=False)
+        'tb_desc_situacao.id_situacao'), nullable=False)
     id_evento = db.Column(db.Integer, db.ForeignKey(
-    'tb_desc_evento.id_evento'), nullable=True)
+        'tb_desc_evento.id_evento'), nullable=True)
     dt_ocorrencia = db.Column(db.DateTime, nullable=False)
     ind_valida = db.Column(db.String(1), nullable=False)
     ind_consistente = db.Column(db.String(1), nullable=False)

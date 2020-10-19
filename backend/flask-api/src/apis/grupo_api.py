@@ -1,16 +1,17 @@
 from flask import request, Response
 from flask_restful import Resource
-from ..servicos import evento_servico
+from ..servicos import grupo_servico
 from ..utils import helper
 import json
+import traceback
 
 
-class EventoAPI(Resource):
+class GrupoAPI(Resource):
 
     def get(self):
         try:
             retorno = [helper.serializar(evento)
-                       for evento in evento_servico.listar_eventos()]
+                       for evento in grupo_servico.listar_grupos()]
             return Response(json.dumps(retorno), status=200)
         except Exception as e:
             traceback.print_exc()
@@ -20,8 +21,8 @@ class EventoAPI(Resource):
         try:
             body = json.loads(request.get_data().decode('UTF-8'))
             if body:
-                id_evento = evento_servico.incluir_evento(body)
-                return Response(json.dumps({"id_evento": id_evento}), status=201)
+                id_evento = grupo_servico.incluir_grupo(body)
+                return Response(json.dumps({"id_grupo": id_evento}), status=201)
         except Exception as e:
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
@@ -30,19 +31,31 @@ class EventoAPI(Resource):
         try:
             body = json.loads(request.get_data().decode('UTF-8'))
             if body:
-                evento_servico.remover_evento(body.get('id_evento'))
+                grupo_servico.remover_grupo(body.get('id_grupo'))
                 return Response('Registro excluído com sucesso', status=200)
         except Exception as e:
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
 
-class EventoIdAPI(Resource):
+class GrupoIdAPI(Resource):
 
-    def get(self, id_evento):
+    def get(self, id_grupo):
         try:
             retorno = [helper.serializar(evento)
-                       for evento in evento_servico.listar_eventos_id(id_evento)]
+                       for evento in grupo_servico.listar_grupos_id(id_grupo)]
+            return Response(json.dumps(retorno), status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
+
+class GrupoFiltroAPI(Resource):
+
+    def get(self, cd_tribunal, cd_grau):
+        try:
+            retorno = [helper.serializar(evento)
+                       for evento in grupo_servico.listar_grupos_filtro(cd_tribunal, cd_grau)]
             return Response(json.dumps(retorno), status=200)
         except Exception as e:
             traceback.print_exc()
@@ -51,6 +64,8 @@ class EventoIdAPI(Resource):
 
 def configure_api(api):
     api.add_resource(
-        EventoAPI, '/api/v1.0/evento')
+        GrupoAPI, '/api/v1.0/grupo')
     api.add_resource(
-        EventoIdAPI, '/api/v1.0/evento/<int:id_evento>')
+        GrupoIdAPI, '/api/v1.0/grupo/<int:id_grupo>')
+    api.add_resource(
+        GrupoFiltroAPI, '/api/v1.0/grupo/<string:cd_tribunal>/<string:cd_grau>')

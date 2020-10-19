@@ -5,6 +5,10 @@ from .evento_api import configure_api as evento_api
 from .situacao_api import configure_api as situacao_api
 from .fluxo_api import configure_api as fluxo_api
 from .prometheus_exporter import configure_prometheus
+from .carregar_processos import configure_api as carregar_processos_api
+from .tribunal_api import configure_api as tribunal_api
+from .grupo_api import configure_api as grupo_api
+
 
 
 def configure_api(application, api, configuracao):
@@ -15,3 +19,7 @@ def configure_api(application, api, configuracao):
     evento_api(api)
     situacao_api(api)
     fluxo_api(api)
+    carregar_processos_api(api)
+    tribunal_api(api)
+    grupo_api(api)
+

@@ -1,6 +1,7 @@
 import re
 from ..entidades.modelo_fluxo import GrupoSituacao
 from ..persistencia.database import db
+from sqlalchemy.orm import aliased,load_only,Load,exc
 from flask_restful import abort
 from flask import  Response
 import json

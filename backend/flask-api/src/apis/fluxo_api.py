@@ -28,30 +28,8 @@ class FluxoAPI(Resource):
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
     def put(self):
-        parser.add_argument('id_fluxo_movimento', required=True, location='json', type=int,
-            help="XXXXXXXXXXXXXx")
-        parser.add_argument('id_situacao_origem', required=True, location='json', type=int,
-            help="XXXXXXXXXXXXX.")
-        parser.add_argument('id_evento', required=True, location='json', type=int,
-            help="XXXXXXXXXXXXXXXXX")
-        parser.add_argument('id_situacao_destino', required=True, location='json', type=int,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('ind_consistente', required=True, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('ind_efetiva', required=True, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('ind_fluxo_ri', required=True, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('id_grupo', required=True, location='json', type=int,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('sg_tribunal', required=True, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('sg_grau', required=False, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-        
-        args = parser.parse_args()
-    
-        return fluxo_servico.atualizar_fluxo(args)
+        body = json.loads(request.get_data().decode('UTF-8'))        
+        return fluxo_servico.atualizar_fluxo(body)
 
 
 class FluxoFiltroAPI(Resource):

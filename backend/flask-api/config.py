@@ -30,6 +30,7 @@ class Config:
 class DevelopmentConfig(Config):
     FLASK_ENV = 'development'
     DEBUG = True
+    SQLALCHEMY_ECHO = True
 
 
 class ProductionConfig(Config):

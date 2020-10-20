@@ -77,7 +77,7 @@ class FluxoOfProcesso(Resource):
     def get(self, id_processo):
         try:
             retorno = situacao_servico.listar_fluxo_processo(id_processo)
-            return Response(json.dumps(retorno), status=200)
+            return Response(json.dumps(retorno, cls=helper.JSONEnconder), status=200)
         except Exception as e:
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')

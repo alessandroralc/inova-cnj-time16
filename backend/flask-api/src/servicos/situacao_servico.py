@@ -75,7 +75,7 @@ def listar_fluxo_processo(id_processo):
         filter(HistoricoSituacao.cd_processo == id_processo).\
         order_by(HistoricoSituacao.dt_ocorrencia).all()
     if cursor is not None:
-        retorno = [construir_processo_fluxo(situacao)
+        return [construir_processo_fluxo(situacao)
                    for situacao in cursor]
     else:
-        retorno = {}
+        return {}

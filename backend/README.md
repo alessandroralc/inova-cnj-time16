@@ -39,6 +39,31 @@ Exemplo de json para o `DELETE`:
 {"id_situacao": 1}
 ```
 ---
+## Grupo de situações
+
+|HTTP Method|Action|Examples|
+|---|---|---|
+|GET|Obter todos grupos|/api/v1.0/grupo|
+|GET|Obter um grupo especifico|/api/v1.0/grupo/`<int:id_grupo>`|
+|GET|Obter grupos de um determinado Tribunal e Grau|/api/v1.0/grupo/`<string:cod_tribunal>`/`<string:cod_instancia>`|
+|POST|Persistir um novo grupo|/api/v1.0/grupo|
+|DELETE|Remover uma grupo|/api/v1.0/grupo|
+
+Para o `POST` e o `DELETE` o conteúdo deverá ser enviado como um json no body.
+Exemplo de json para o `POST`:
+```
+{"ind_principal": "S", 
+"ds_situacao": "Início de fluxo", 
+"sg_tribunal": "TRT3", 
+"ind_ri": "S", 
+"cd_situacao": "I",
+"sg_grau": "G2"}
+```
+Exemplo de json para o `DELETE`:
+```
+{"id_grupo": 1}
+```
+---
 ## Eventos
 
 *Subsituindo o serviço antigo*: `/eventos`

@@ -76,6 +76,21 @@ class SituacaoProcesso(Resource):
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
+class FluxoOfProcesso(Resource):
+
+    def get(self, id_processo):
+        try:
+            cursor = situacao_servico.listar_fluxo_processo(id_processo)
+            if cursor is not None:
+                retorno = [helper.serializar(situacao)
+                           for situacao in cursor]
+            else:
+                retorno = {}
+            return Response(json.dumps(retorno), status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
 
 
 
@@ -88,3 +103,5 @@ def configure_api(api):
         SituacaoFiltroAPI, '/api/v1.0/situacao/<string:cod_tribunal>/<string:cod_instancia>')
     api.add_resource(
         SituacaoProcesso, '/api/v1.0/situacao/<string:str_consistente>')
+    api.add_resource(
+        FluxoOfProcesso, '/api/v1.0/situacao/processo/<string:id_processo>')

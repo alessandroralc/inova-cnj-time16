@@ -137,7 +137,7 @@ def gerar_transicoes_arvore(cd_tribunal, cd_instancia, ind_consistente):
     transicoes_inicio = recuperar_transicao_arvore(
         cd_tribunal, cd_instancia, ind_consistente)
     id_inicio = transicoes_inicio[0][3]
-    deep = 10
+    deep = 7
     return {'cd_situacao': 'I',
             'ds_situacao': 'Início', 
             'children': funcao_recursiva(cd_tribunal, cd_instancia,

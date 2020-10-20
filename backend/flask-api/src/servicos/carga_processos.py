@@ -176,33 +176,33 @@ def carregar_eventos(processo, movimentos):
 def limpar_dados(tribunal, instancia):
   print('Realizando limpeza dos dados')
   with db.engine.connect() as conn:
-    sql = """delete from tb_processo_evento where cd_processo 
-          in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s)
-          """
-    conn.execute(sql, (tribunal, instancia))
-    conn.execute('delete from tb_processo where sg_tribunal = %s and sg_grau = %s', (tribunal, instancia))
     conn.execute("""delete from tb_hist_situacao where cd_processo in 
                 in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s)
-    """, (tribunal, instancia))
+    """, (tribunal, instancia))    
+    conn.execute("""delete from tb_processo_evento where cd_processo 
+          in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s)
+          """, (tribunal, instancia))
+    conn.execute('delete from tb_processo where sg_tribunal = %s and sg_grau = %s', (tribunal, instancia))
 
 
 def limpar_dados_processo(tribunal, instancia, cd_processo):
   print('Realizando limpeza do processo')
   with db.engine.connect() as conn:
-    sql = """delete from tb_processo_evento where cd_processo 
-          in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s and cd_processo = %s)
-          """
-    conn.execute(sql, (tribunal, instancia, cd_processo))
-    conn.execute('delete from tb_processo where sg_tribunal = %s and sg_grau = %s and cd_processo = %s', (tribunal, instancia, cd_processo))
     conn.execute("""delete from tb_hist_situacao where cd_processo 
           in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s and cd_processo = %s)
           """, (tribunal, instancia, cd_processo))
+    conn.execute("""delete from tb_processo_evento where cd_processo 
+          in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s and cd_processo = %s)
+          """, (tribunal, instancia, cd_processo))
+    conn.execute('delete from tb_processo where sg_tribunal = %s and sg_grau = %s and cd_processo = %s', (tribunal, instancia, cd_processo))
 
 
 def carregar_historico_situacoes(cd_processo=None):
-  with db.engine.connect() as conn:
-    print(f'Validando as situações do processo {cd_processo}')
-    conn.execute("""select fn_carga_tb_hist_situacao(%s)""", (cd_processo, ))    
+  print(f'Validando as situações do processo {cd_processo}')   
+  db.session.execute(
+    """select fn_carga_tb_hist_situacao(null)""", (cd_processo, )
+  )
+  db.session.commit()
 
 
 @celery.task()

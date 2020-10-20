@@ -1,6 +1,7 @@
 from flask import request, Response
 from flask_restful import Resource
 from ..servicos import grupo_servico
+from ..servicos import situacao_servico
 from ..utils import helper
 import json
 import traceback
@@ -62,10 +63,25 @@ class GrupoFiltroAPI(Resource):
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
 
+class GrupoSituacaoAPI(Resource):
+
+    def get(self, cd_tribunal, cd_grau):
+        try:
+            retorno = [helper.serializar(evento)
+                       for evento in situacao_servico.listar_situacoes_grupo(id_grupo)]
+            return Response(json.dumps(retorno), status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
+
+
 def configure_api(api):
     api.add_resource(
         GrupoAPI, '/api/v1.0/grupo')
     api.add_resource(
         GrupoIdAPI, '/api/v1.0/grupo/<int:id_grupo>')
+    api.add_resource(
+        GrupoSituacaoAPI, '/api/v1.0/grupo/<int:id_grupo>/situacao')        
     api.add_resource(
         GrupoFiltroAPI, '/api/v1.0/grupo/<string:cd_tribunal>/<string:cd_grau>')

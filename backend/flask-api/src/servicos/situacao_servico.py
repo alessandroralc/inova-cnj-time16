@@ -27,3 +27,7 @@ def listar_situacoes_filtro(cod_tribunal, cod_instancia):
 
 def listar_situacoes_id(id_situacao):
     return db.session.query(Situacao).filter(Situacao.id_situacao == id_situacao).all()
+
+
+def listar_situacoes_grupo(id_grupo):
+    return db.session.query(Situacao).filter(Situacao.id_grupo == id_grupo).all()

@@ -1,6 +1,7 @@
 from flask import request, Response
 from flask_restful import Resource
 from ..servicos import evento_servico
+from ..servicos import movimento_servico
 from ..utils import helper
 import json
 import traceback
@@ -50,8 +51,22 @@ class EventoIdAPI(Resource):
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
 
+class EventoMovimentoAPI(Resource):
+
+    def get(self, id_evento):
+        try:
+            retorno = [helper.serializar(evento)
+                       for evento in movimento_servico.listar_movimentos_evento(id_evento)]
+            return Response(json.dumps(retorno), status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
+
 def configure_api(api):
     api.add_resource(
         EventoAPI, '/api/v1.0/evento')
     api.add_resource(
         EventoIdAPI, '/api/v1.0/evento/<int:id_evento>')
+    api.add_resource(
+        EventoMovimentoAPI, '/api/v1.0/evento/<int:id_evento>/movimento')

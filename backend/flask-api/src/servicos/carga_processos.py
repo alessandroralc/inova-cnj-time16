@@ -1,7 +1,6 @@
 import os
 from datetime import datetime
 from elasticsearch import Elasticsearch
-from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from ..persistencia.database import db
@@ -13,12 +12,8 @@ from ..celery.celery_init import celery
 COD_OJ_PRES = 72819
 
 
-def pesquisar_processos_elastic(siglaTribunal, grau, start, end):
-  es = Elasticsearch([{'host': os.getenv('HOST_ELASTIC'), 'port': os.getenv('PORT_ELASTIC')}],
-                      http_auth=(os.getenv('USER_ELASTIC'), os.getenv('PASS_ELASTIC')))
-  response = es.search(
-      index="datajud_jt",
-      body={
+def pesquisa_com_processo(sigla_tribunal, grau, processo, start, end):
+  return {
         "from" : start, "size" : end,
           "query": {"bool": {
               "should": [
@@ -26,7 +21,31 @@ def pesquisar_processos_elastic(siglaTribunal, grau, start, end):
                         "bool": {
                             "must": [
                                 {
-                                    "term": {"siglaTribunal.keyword": siglaTribunal}
+                                    "term": {"siglaTribunal.keyword": sigla_tribunal}
+                                },
+                                {
+                                    "term": {"grau.keyword": grau}
+                                },
+                                {
+                                    "term": {"_id": processo if processo else '*'}
+                                }
+                            ]
+                        }
+                    }]
+          }}
+      }
+
+
+def pequisa_sem_processo(sigla_tribunal, grau, start, end):
+  return {
+        "from" : start, "size" : end,
+          "query": {"bool": {
+              "should": [
+                    {
+                        "bool": {
+                            "must": [
+                                {
+                                    "term": {"siglaTribunal.keyword": sigla_tribunal}
                                 },
                                 {
                                     "term": {"grau.keyword": grau}
@@ -36,6 +55,14 @@ def pesquisar_processos_elastic(siglaTribunal, grau, start, end):
                     }]
           }}
       }
+
+
+def pesquisar_processos_elastic(siglaTribunal, grau, start, end, processo = None):
+  es = Elasticsearch([{'host': os.getenv('HOST_ELASTIC'), 'port': os.getenv('PORT_ELASTIC')}],
+                      http_auth=(os.getenv('USER_ELASTIC'), os.getenv('PASS_ELASTIC')))
+  response = es.search(
+      index="datajud_jt",
+      body= pesquisa_com_processo(siglaTribunal, grau, processo, start, end) if processo else pequisa_sem_processo(siglaTribunal, grau, start, end)
   )
   return response
 
@@ -78,10 +105,10 @@ def existe_evento_processo(cd_processo, id_evento, dt_ocorrencia):
 
 def inserir_evento(cd_processo, id_evento, dt_ocorrencia):
   with db.engine.connect() as conn:
-      resultado = existe_evento_processo(processo.cd_processo, id_evento, dt_ocorrencia)
+      resultado = existe_evento_processo(cd_processo, id_evento, dt_ocorrencia)
       if len(resultado) == 0:
         sql_insert = """Insert into tb_processo_evento values (nextval('tb_processo_evento_id_processo_evento_seq'), %s, %s, %s ) """
-        conn.execute(sql_insert, (processo.cd_processo, id_evento, dt_ocorrencia))
+        conn.execute(sql_insert, (cd_processo, id_evento, dt_ocorrencia))
 
 
 def carregar_movimento_sem_complemento(processo, mov, ind_tipo_especial):
@@ -146,11 +173,47 @@ def carregar_eventos(processo, movimentos):
     carregar_movimento_sem_complemento(processo, mov, ind_tipo_especial)
 
 
+def limpar_dados(tribunal, instancia):
+  print('Realizando limpeza dos dados')
+  with db.engine.connect() as conn:
+    sql = """delete from tb_processo_evento where cd_processo 
+          in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s)
+          """
+    conn.execute(sql, (tribunal, instancia))
+    conn.execute('delete from tb_processo where sg_tribunal = %s and sg_grau = %s', (tribunal, instancia))
+    conn.execute("""delete from tb_hist_situacao where cd_processo in 
+                in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s)
+    """, (tribunal, instancia))
+
+
+def limpar_dados_processo(tribunal, instancia, cd_processo):
+  print('Realizando limpeza do processo')
+  with db.engine.connect() as conn:
+    sql = """delete from tb_processo_evento where cd_processo 
+          in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s and cd_processo = %s)
+          """
+    conn.execute(sql, (tribunal, instancia, cd_processo))
+    conn.execute('delete from tb_processo where sg_tribunal = %s and sg_grau = %s and cd_processo = %s', (tribunal, instancia, cd_processo))
+    conn.execute("""delete from tb_hist_situacao where cd_processo 
+          in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s and cd_processo = %s)
+          """, (tribunal, instancia, cd_processo))
+
+
+def carregar_historico_situacoes(cd_processo=None):
+  with db.engine.connect() as conn:
+    print(f'Validando as situações do processo {cd_processo}')
+    conn.execute("""select fn_carga_tb_hist_situacao(%s)""", (cd_processo, ))    
+
+
 @celery.task()
-def carregar_dados_processos(tribunal, instancia):
+def carregar_dados_processos(tribunal, instancia, realizar_limpeza):
   print('Iniciando carga')
+  if realizar_limpeza:
+    limpar_dados(tribunal, instancia)
   total = pesquisar_processos_elastic(tribunal, instancia, 0, 1)['hits']['total']['value']
   tamanho_pag = 50 if total > 50 else total
+  if tamanho_pag == 0:
+    tamanho_pag = 1
   paginas = total / tamanho_pag
   resto = total % tamanho_pag
   reg_ini = 0
@@ -163,6 +226,23 @@ def carregar_dados_processos(tribunal, instancia):
       carregar_eventos(processo, registro['_source']['movimento'])
     reg_ini += tamanho_pag
     reg_fim = (tamanho_pag + resto if i == paginas else tamanho_pag)
+  carregar_historico_situacoes()
+  print('Finalizada a carga')
     
+
+@celery.task()
+def carregar_dados_processo(tribunal, instancia, cd_processo):
+  print(f'Iniciando a carga do processo {cd_processo}')
+  limpar_dados_processo(tribunal, instancia, cd_processo)
+  resp = pesquisar_processos_elastic(tribunal, instancia, 0, 1, cd_processo)
+  for registro in resp['hits']['hits']:
+    processo = carregar_processo(registro)
+    print(f'Localizei o processo {processo.cd_processo}')
+    persistir_processo(processo)
+    carregar_eventos(processo, registro['_source']['movimento'])  
+  carregar_historico_situacoes(cd_processo)
+  print(f'Finalizada a carga do processo {cd_processo}')
+
+
 if __name__ == "__main__":
     carregar_dados_processos('TRT3', 'G2')

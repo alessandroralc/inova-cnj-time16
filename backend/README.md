@@ -46,6 +46,7 @@ Exemplo de json para o `DELETE`:
 |GET|Obter todos grupos|/api/v1.0/grupo|
 |GET|Obter um grupo especifico|/api/v1.0/grupo/`<int:id_grupo>`|
 |GET|Obter grupos de um determinado Tribunal e Grau|/api/v1.0/grupo/`<string:cod_tribunal>`/`<string:cod_instancia>`|
+|GET|Obter siutações de um determinado Grupo|/api/v1.0/grupo/`<int:id_grupo>`/situacao|
 |POST|Persistir um novo grupo|/api/v1.0/grupo|
 |DELETE|Remover uma grupo|/api/v1.0/grupo|
 
@@ -72,6 +73,7 @@ Exemplo de json para o `DELETE`:
 |---|---|---|
 |GET|Obter todos os eventos|/api/v1.0/evento|
 |GET|Obter um evento especifico|/api/v1.0/evento`<int:id_evento>`|
+|GET|Obter os movimentos relacionados ao evento|/api/v1.0/evento/`<int:id_evento>`/movimento|
 |POST|Persistir um novo evento|/api/v1.0/evento|
 |DELETE|Remover um evento|/api/v1.0/evento|
 
@@ -118,4 +120,27 @@ Exemplo de json para o `POST`:
 Exemplo de json para o `DELETE`:
 ```
 {"id_fluxo_movimento": 1}
+```
+---
+## Importação e Validação de Processos
+
+|HTTP Method|Action|Examples|
+|---|---|---|
+|POST|Carregar e validar todos os processos de um determinado Tribunal|/api/v1.0/processo/carga/completa|
+|POST|Carregar e validar um único processo|/api/v1.0/processo/carga|
+
+Para o `POST` o conteúdo deverá ser enviado como um json no body.
+Devido ao tempo de processamento alto, essas APIs somente disparam execuções em backgroud.
+Exemplo de json para o `POST` carga completa:
+```
+{"cod_tribunal": "TRT3", 
+"cod_instancia":"G2", 
+"realizar_limpeza": True
+}```
+Exemplo de json para o `POST` carga de um único processo:
+```
+{"cod_tribunal": "TRT3", 
+"cod_instancia":"G2", 
+"cd_processo": "TRT3_G2_00109462520195030012_1009"
+}
 ```

@@ -11,3 +11,10 @@ def inserir_processo(processo):
 def retornar_processo(cd_processo):
     return db.session.query(Processo).filter(
         Processo.cd_processo == cd_processo).first()
+
+
+def pesquisar_fluxo_processo(cd_processo):
+    with db.engine.connect() as conn:
+        sql = """   
+
+        """

@@ -1,7 +1,8 @@
+import os
 import pandas as pd
 from sqlalchemy import create_engine
 engine = create_engine(
-    'postgres://sanjus_app:inovacnj@time16-sanjus.ddns.net:5433/sanjus', echo=False)
+    os.getenv('DATABASE_URL'), echo=False)
 
 df_situacao = pd.read_csv('carga_situacoes.csv', sep=',')
 df_situacao['sg_tribunal'] = 'TRT3'

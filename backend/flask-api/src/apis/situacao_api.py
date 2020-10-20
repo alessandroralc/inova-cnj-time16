@@ -1,3 +1,4 @@
+from json import encoder
 from flask import request, Response
 from flask_restful import Resource
 from ..servicos import situacao_servico
@@ -65,13 +66,8 @@ class SituacaoProcesso(Resource):
 
     def get(self, str_consistente):
         try:
-            cursor = situacao_servico.listar_processos_consistencia(str_consistente)
-            if cursor is not None:
-                retorno = [helper.serializar(situacao)
-                           for situacao in cursor]
-            else:
-                retorno = {}
-            return Response(json.dumps(retorno), status=200)
+            retorno = situacao_servico.listar_processos_consistencia(str_consistente)
+            return Response(json.dumps(retorno, cls=helper.JSONEnconder), status=200)
         except Exception as e:
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
@@ -80,12 +76,7 @@ class FluxoOfProcesso(Resource):
 
     def get(self, id_processo):
         try:
-            cursor = situacao_servico.listar_fluxo_processo(id_processo)
-            if cursor is not None:
-                retorno = [helper.serializar(situacao)
-                           for situacao in cursor]
-            else:
-                retorno = {}
+            retorno = situacao_servico.listar_fluxo_processo(id_processo)
             return Response(json.dumps(retorno), status=200)
         except Exception as e:
             traceback.print_exc()

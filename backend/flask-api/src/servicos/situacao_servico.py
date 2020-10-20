@@ -1,7 +1,7 @@
 import re
 from ..entidades.modelo_fluxo import Situacao, HistoricoSituacao, Evento, Processo
 from ..persistencia.database import db
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased,load_only,Load,with_expression
 
 
 def incluir_situacao(parametros):
@@ -49,25 +49,38 @@ def listar_processos_consistencia(str_consistente):
     SituacaoOrigem = aliased(Situacao)
     SituacaoDestino = aliased(Situacao)
     cursor = db.session.query(HistoricoSituacao, SituacaoOrigem, SituacaoDestino, Evento, Processo).\
-        with_entities(Processo.nu_processo, Processo.cd_classe, Processo.cd_processo, SituacaoOrigem.ds_situacao, Evento.ds_evento, SituacaoDestino.ds_situacao, HistoricoSituacao.dt_ocorrencia, HistoricoSituacao.ind_consistente).\
-        join(SituacaoOrigem, HistoricoSituacao.id_situacao_origem == SituacaoOrigem.id_situacao).\
-        join(SituacaoDestino, HistoricoSituacao.id_situacao_destino == SituacaoDestino.id_situacao).\
-        join(Evento, HistoricoSituacao.id_evento == Evento.id_evento).\
-        join(Processo, HistoricoSituacao.cd_processo == Processo.cd_processo).\
-        filter(HistoricoSituacao.ind_consistente == str_consistente).\
-        order_by(Processo.cd_processo, HistoricoSituacao.dt_ocorrencia).all()
+    options(
+        Load(Processo).load_only("nu_processo", "cd_classe","cd_processo"),
+        Load(SituacaoOrigem).load_only("ds_situacao"),
+        Load(Evento).load_only("ds_evento"),
+        Load(SituacaoDestino).load_only("ds_situacao"),
+        Load(HistoricoSituacao).load_only("dt_ocorrencia","ind_consistente")
+    ).\
+    join(SituacaoOrigem, HistoricoSituacao.id_situacao_origem == SituacaoOrigem.id_situacao).\
+    join(SituacaoDestino, HistoricoSituacao.id_situacao_destino == SituacaoDestino.id_situacao).\
+    join(Evento, HistoricoSituacao.id_evento == Evento.id_evento).\
+    join(Processo, HistoricoSituacao.cd_processo == Processo.cd_processo).\
+    filter(HistoricoSituacao.ind_consistente == str_consistente).\
+    order_by(Processo.cd_processo, HistoricoSituacao.dt_ocorrencia).all()
+
     if cursor is not None:
-        return [construir_processo_fluxo(situacao)
-                for situacao in cursor]
+        return cursor
     else:
-        return {}
+        print('None')
+        return []
 
 
 def listar_fluxo_processo(id_processo):
     SituacaoOrigem = aliased(Situacao)
     SituacaoDestino = aliased(Situacao)
     cursor = db.session.query(HistoricoSituacao, SituacaoOrigem, SituacaoDestino, Evento, Processo).\
-        with_entities(Processo.nu_processo, Processo.cd_classe, Processo.cd_processo, SituacaoOrigem.ds_situacao, Evento.ds_evento, SituacaoDestino.ds_situacao, HistoricoSituacao.dt_ocorrencia, HistoricoSituacao.ind_consistente).\
+        options(
+            Load(Processo).load_only("nu_processo", "cd_classe","cd_processo"),
+            Load(SituacaoOrigem).load_only("ds_situacao"),
+            Load(Evento).load_only("ds_evento"),
+            Load(SituacaoDestino).load_only("ds_situacao"),
+            Load(HistoricoSituacao).load_only("dt_ocorrencia","ind_consistente")
+        ).\
         join(SituacaoOrigem, HistoricoSituacao.id_situacao_origem == SituacaoOrigem.id_situacao).\
         join(SituacaoDestino, HistoricoSituacao.id_situacao_destino == SituacaoDestino.id_situacao).\
         join(Evento, HistoricoSituacao.id_evento == Evento.id_evento).\
@@ -75,7 +88,6 @@ def listar_fluxo_processo(id_processo):
         filter(HistoricoSituacao.cd_processo == id_processo).\
         order_by(HistoricoSituacao.dt_ocorrencia).all()
     if cursor is not None:
-        return [construir_processo_fluxo(situacao)
-                   for situacao in cursor]
+        return cursor
     else:
-        return {}
+        return []

@@ -3,11 +3,33 @@ import json
 import datetime
 import math
 import locale
-
+from collections import Counter
 
 def serializar(obj):
     return {k: v for (k, v) in vars(obj).items()
             if not str(k).startswith('_')}
+
+def serializar_lista(lista_de_tupla):
+    #if len(lista_de_tupla) == 0:
+    #    return {}
+    lista_de_dicionario = [serializar(obj) for obj in lista_de_tupla]
+    
+    #Deal with objects from the same table like Situacao.ds_situacao origem e destino
+    out_dict = {}
+    repeated_key_counter = Counter()    
+    for d in lista_de_dicionario:
+        for k,v in d.items():
+            if out_dict.get(k) is None:
+                out_dict[k] = v
+            else:
+                repeated_key_counter[k]+=1
+                k+='_'+str(repeated_key_counter[k]+1)
+                out_dict[k] = v    
+                  
+
+    return out_dict
+        
+
 
 
 class JSONEnconder(json.JSONEncoder):

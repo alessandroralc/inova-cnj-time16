@@ -66,7 +66,9 @@ class SituacaoProcesso(Resource):
 
     def get(self, str_consistente):
         try:
-            retorno = situacao_servico.listar_processos_consistencia(str_consistente)
+            retorno = [helper.serializar_lista(situacao)
+                       for situacao in situacao_servico.listar_processos_consistencia(str_consistente)]
+            
             return Response(json.dumps(retorno, cls=helper.JSONEnconder), status=200)
         except Exception as e:
             traceback.print_exc()
@@ -76,7 +78,9 @@ class FluxoOfProcesso(Resource):
 
     def get(self, id_processo):
         try:
-            retorno = situacao_servico.listar_fluxo_processo(id_processo)
+            retorno = [helper.serializar_lista(situacao)
+                       for situacao in situacao_servico.listar_fluxo_processo(id_processo)]
+
             return Response(json.dumps(retorno, cls=helper.JSONEnconder), status=200)
         except Exception as e:
             traceback.print_exc()

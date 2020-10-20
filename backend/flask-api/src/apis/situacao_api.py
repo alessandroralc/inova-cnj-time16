@@ -61,6 +61,23 @@ class SituacaoIdAPI(Resource):
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
+class SituacaoProcesso(Resource):
+
+    def get(self, str_consistente):
+        try:
+            cursor = situacao_servico.listar_processos_consistencia(str_consistente)
+            if cursor is not None:
+                retorno = [helper.serializar(situacao)
+                           for situacao in cursor]
+            else:
+                retorno = {}
+            return Response(json.dumps(retorno), status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
+
+
 
 def configure_api(api):
     api.add_resource(
@@ -69,3 +86,5 @@ def configure_api(api):
         SituacaoIdAPI, '/api/v1.0/situacao/<int:id_situacao>')
     api.add_resource(
         SituacaoFiltroAPI, '/api/v1.0/situacao/<string:cod_tribunal>/<string:cod_instancia>')
+    api.add_resource(
+        SituacaoProcesso, '/api/v1.0/situacao/<string:str_consistente>')

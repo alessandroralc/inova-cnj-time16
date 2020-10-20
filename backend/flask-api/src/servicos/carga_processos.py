@@ -176,7 +176,7 @@ def carregar_eventos(processo, movimentos):
 def limpar_dados(tribunal, instancia):
   print('Realizando limpeza dos dados')
   with db.engine.connect() as conn:
-    conn.execute("""delete from tb_hist_situacao where cd_processo in 
+    conn.execute("""delete from tb_hist_situacao where cd_processo 
                 in (select cd_processo from tb_processo where sg_tribunal = %s and sg_grau = %s)
     """, (tribunal, instancia))    
     conn.execute("""delete from tb_processo_evento where cd_processo 

@@ -1,5 +1,5 @@
 from flask import request, Response
-from flask_restful import Resource
+from flask_restful import Resource,reqparse, abort
 from ..servicos import evento_servico
 from ..servicos import movimento_servico
 from ..utils import helper
@@ -28,6 +28,22 @@ class EventoAPI(Resource):
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
+    def put(self):
+        parser.add_argument('id_evento', required=True, location='json', type=int,
+            help="XXXXXXXXXXXXXx")
+        parser.add_argument('ds_evento', required=True, location='json', type=str,
+            help="XXXXXXXXXXXXX.")
+        parser.add_argument('cd_evento', required=True, location='json', type=str,
+            help="XXXXXXXXXXXXXXXXX")
+        parser.add_argument('ind_fluxo_ri', required=True, location='json', type=str,
+            help="XXXXXXXXXXXXXXXX")
+        parser.add_argument('ind_tipo_especial', required=False, location='json',type=str,
+            help="XXXXXXXXXXXXXXXX")
+
+        args = parser.parse_args()
+
+        return evento_servico.atualizar_evento(args)
+      
 
 class EventoIdAPI(Resource):
 

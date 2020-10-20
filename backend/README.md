@@ -23,6 +23,9 @@
 |GET|Obter situações de um determinado Tribunal e Grau|/api/v1.0/situacao/`<string:cod_tribunal>`/`<string:cod_instancia>`|
 |POST|Persistir uma nova situação|/api/v1.0/situacao|
 |DELETE|Remover uma situação|/api/v1.0/situacao|
+|GET|Obter as situações inconsistentes|api/v1.0/situacao/`<string:str_consistente>`|
+|GET|Obter as transições de situações de um determinado processo|/api/v1.0/situacao/processo/`<string:id_processo>`|
+
 
 Para o `POST` e o `DELETE` o conteúdo deverá ser enviado como um json no body.
 Exemplo de json para o `POST`:
@@ -46,7 +49,7 @@ Exemplo de json para o `DELETE`:
 |GET|Obter todos grupos|/api/v1.0/grupo|
 |GET|Obter um grupo especifico|/api/v1.0/grupo/`<int:id_grupo>`|
 |GET|Obter grupos de um determinado Tribunal e Grau|/api/v1.0/grupo/`<string:cod_tribunal>`/`<string:cod_instancia>`|
-|GET|Obter siutações de um determinado Grupo|/api/v1.0/grupo/`<int:id_grupo>`/situacao|
+|GET|Obter situações de um determinado Grupo|/api/v1.0/grupo/`<int:id_grupo>`/situacao|
 |POST|Persistir um novo grupo|/api/v1.0/grupo|
 |DELETE|Remover uma grupo|/api/v1.0/grupo|
 

@@ -28,16 +28,6 @@ class GrupoAPI(Resource):
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
-    def delete(self):
-        try:
-            body = json.loads(request.get_data().decode('UTF-8'))
-            if body:
-                grupo_servico.remover_grupo(body.get('id_grupo'))
-                return Response('Registro excluído com sucesso', status=200)
-        except Exception as e:
-            traceback.print_exc()
-            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
-
     def put(self):
         parser.add_argument('id_grupo', required=True, location='json', type=int,
             help="XXXXXXXXXXXXXx")
@@ -55,7 +45,6 @@ class GrupoAPI(Resource):
         return grupo_servico.atualizar_grupo(args)
 
 
-
 class GrupoIdAPI(Resource):
 
     def get(self, id_grupo):
@@ -63,6 +52,14 @@ class GrupoIdAPI(Resource):
             retorno = [helper.serializar(evento)
                        for evento in grupo_servico.listar_grupos_id(id_grupo)]
             return Response(json.dumps(retorno), status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
+    def delete(self, id_grupo):
+        try:
+            grupo_servico.remover_grupo(id_grupo)
+            return Response('Registro excluído com sucesso', status=200)
         except Exception as e:
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
@@ -92,13 +89,12 @@ class GrupoSituacaoAPI(Resource):
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
 
-
 def configure_api(api):
     api.add_resource(
         GrupoAPI, '/api/v1.0/grupo')
     api.add_resource(
         GrupoIdAPI, '/api/v1.0/grupo/<int:id_grupo>')
     api.add_resource(
-        GrupoSituacaoAPI, '/api/v1.0/grupo/<int:id_grupo>/situacao')        
+        GrupoSituacaoAPI, '/api/v1.0/grupo/<int:id_grupo>/situacao')
     api.add_resource(
         GrupoFiltroAPI, '/api/v1.0/grupo/<string:cd_tribunal>/<string:cd_grau>')

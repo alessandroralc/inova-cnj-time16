@@ -1,17 +1,17 @@
 from flask import request, Response
 from flask_restful import Resource,reqparse, abort
-from ..servicos import movimento_servico
+from ..servicos import complemento_servico
 from ..utils import helper
 import json
 import traceback
 
 
-class MovimentoAPI(Resource):
+class ComplementoAPI(Resource):
 
     def get(self):
         try:
             retorno = [helper.serializar(evento)
-                       for evento in movimento_servico.listar_movimentos()]
+                       for evento in complemento_servico.listar_complementos()]
             return Response(json.dumps(retorno), status=200)
         except Exception as e:
             traceback.print_exc()
@@ -21,8 +21,8 @@ class MovimentoAPI(Resource):
         try:
             body = json.loads(request.get_data().decode('UTF-8'))
             if body:
-                id_movimento = movimento_servico.incluir_movimento(body)
-                return Response(json.dumps({"id_movimento": id_movimento}), status=201)
+                id_complemento = complemento_servico.incluir_complemento(body)
+                return Response(json.dumps({"id_complemento": id_complemento}), status=201)
         except Exception as e:
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
@@ -31,7 +31,7 @@ class MovimentoAPI(Resource):
         try:
             body = json.loads(request.get_data().decode('UTF-8'))
             if body:
-                movimento_servico.remover_movimento(body.get('id_movimento'))
+                complemento_servico.remover_complemento(body.get('id_complemento'))
                 return Response('Registro excluído com sucesso', status=200)
         except Exception as e:
             traceback.print_exc()
@@ -39,16 +39,18 @@ class MovimentoAPI(Resource):
 
 
     def put(self):
-        parser.add_argument('id_movimento', required=True, location='json', type=int,
+        parser.add_argument('id_complemento', required=True, location='json', type=int,
             help="XXXXXXXXXXXXXx")
-        parser.add_argument('cd_tpu_movimento', required=True, location='json', type=str,
+        parser.add_argument('cd_tpu_complemento', required=True, location='json', type=str,
             help="XXXXXXXXXXXXX.")
-        parser.add_argument('id_evento', required=True, location='json', type=int,
+        parser.add_argument('vl_complemento', required=True, location='json', type=str,
+            help="XXXXXXXXXXXXXXXXX")
+        parser.add_argument('id_movimento', required=True, location='json', type=int,
             help="XXXXXXXXXXXXXXXXX")
 
         args = parser.parse_args()
 
-        return movimento_servico.atualizar_movimento(args)
+        return complemento_servico.atualizar_complemento(args)
 
 
 
@@ -57,4 +59,4 @@ class MovimentoAPI(Resource):
 
 def configure_api(api):
     api.add_resource(
-        MovimentoAPI, '/api/v1.0/movimento')
+        ComplementoAPI, '/api/v1.0/complemento')

@@ -200,7 +200,7 @@ def limpar_dados_processo(tribunal, instancia, cd_processo):
 def carregar_historico_situacoes(cd_processo=None):
   print(f'Validando as situações do processo {cd_processo}')   
   db.session.execute(
-    """select fn_carga_tb_hist_situacao(null)""", (cd_processo, )
+    """select fn_carga_tb_hist_situacao(:processo)""", {"processo": cd_processo}
   )
   db.session.commit()
 

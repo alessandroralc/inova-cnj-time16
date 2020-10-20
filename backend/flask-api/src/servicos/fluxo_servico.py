@@ -165,3 +165,28 @@ def funcao_recursiva(cd_tribunal, cd_instancia, ind_consistente, id_situacao, li
         return {'cd_situacao': linha[0],
                 'ds_situacao': linha[1]
                 }
+
+
+def atualizar_fluxo(data_json):
+    
+    try:
+        obj_db = FluxoMovimentos.query.filter(FluxoMovimentos.id_fluxo_movimento == int(data_json['id_fluxo_movimento'])).one()
+    
+    except (exc.NoResultFound, exc.MultipleResultsFound) as error:
+        return abort(404, message="ERRO: {}".format(error))    
+    
+    else:
+        
+        for key, value in data_json.items():
+            setattr(obj_db, key, value)
+       
+
+        try:        
+            db.session.commit()
+        except Exception as error:
+            db.session.rollback()
+            return abort(404, message="ERRO: {}".format(error))
+        
+                
+        
+        return Response(json.dumps({'message':'Situacao com id {} atualizada.'.format(obj_db.id_fluxo_movimento)}), status=200)

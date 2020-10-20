@@ -1,10 +1,14 @@
 from json import encoder
 from flask import request, Response
-from flask_restful import Resource
+from flask_restful import Resource,reqparse, abort
 from ..servicos import situacao_servico
 from ..utils import helper
+from ..persistencia.database import db
 import json
 import traceback
+
+
+parser = reqparse.RequestParser()
 
 
 class SituacaoAPI(Resource):
@@ -37,6 +41,34 @@ class SituacaoAPI(Resource):
         except Exception as e:
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+    
+    def put(self):
+        parser.add_argument('id_situacao', required=True, location='json', type=int,
+            help="XXXXXXXXXXXXXx")
+        parser.add_argument('ds_situacao', required=True, location='json', type=str,
+            help="XXXXXXXXXXXXX.")
+        parser.add_argument('cd_situacao', required=True, location='json', type=str,
+            help="XXXXXXXXXXXXXXXXX")
+        parser.add_argument('ind_principal', required=True, location='json', type=str,
+            help="XXXXXXXXXXXXXXXX")
+        parser.add_argument('ind_ri', required=True, location='json',type=str,
+            help="XXXXXXXXXXXXXXXX")
+        parser.add_argument('sg_tribunal', required=True, location='json',type=str,
+            help="XXXXXXXXXXXXXXXX")
+        parser.add_argument('sg_grau', required=True, location='json',type=str,
+            help="XXXXXXXXXXXXXXXX")
+        parser.add_argument('fl_inicio', required=True, location='json', type=str,
+            help="XXXXXXXXXXXXXXXX")
+        parser.add_argument('fl_fim', required=True, location='json',type=str,
+            help="XXXXXXXXXXXXXXXX")
+        parser.add_argument('id_grupo', required=False, location='json',type=int,
+            help="XXXXXXXXXXXXXXXX")
+        
+        args = parser.parse_args()
+        
+        return situacao_servico.atualizar_situacao(args)
+       
+        
 
 
 class SituacaoFiltroAPI(Resource):

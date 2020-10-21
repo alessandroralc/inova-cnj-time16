@@ -26,6 +26,7 @@ class CarregarUnicoProcesso(Resource):
     def post(self):
         try:
             body = json.loads(request.get_data().decode('UTF-8'))
+            print(body)
             retorno = {
                 "mensagem": f"A carga foi iniciada com sucesso em segundo plano para {body['cod_tribunal']} {body['cod_instancia']}"
             }

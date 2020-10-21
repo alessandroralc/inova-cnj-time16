@@ -1,5 +1,17 @@
 # inova-cnj-time16
 
+# Conteúdo
+
+1. [A Solução](#A-Solucao)
+2. [Vantagens da solução](#Vantagens-da-solução)
+3. [Principais Requisitos](#Principais-Requisitos)
+4. [Definição do Analisador de fluxos processuais](#Definição-do-Analisador-de-fluxos-processuais)
+5. [Entendendo a solução de fluxos](#Entendendo-a-solução-de-fluxos)
+6. [Arquitetura da solução](#Arquitetura-da-solução)
+7. [Areas de conhecimento e técnicas envolvidas](#Areas-de-conhecimento-e-técnicas-envolvidas)
+8. [Ambiente de execução](#Ambiente-de-execução)
+9. [Melhorias futuras:](#Definição-do-Analisador-de-fluxos-processuais)
+
 ## A Solução
 
 As inconsistências nas movimentações em grande parte dos processos em tramitação têm efeitos danosos nas estatísticas dos Tribunais, pois produzem dados de pouca qualidade e informações pouco confiáveis. Dessa forma, verifica-se prejuízo à gestão estratégica da Justiça e ao gerenciamento funcional dos Tribunais e suas unidades judiciárias, decorrentes da apuração incorreta de indicadores de interesse administrativo e institucional.
@@ -333,7 +345,7 @@ Desta forma a aplicação foi construída utilizando o framework Angular. Para m
     ◦ Angular: The MIT License
     ◦ Angular Material: The MIT License
 
-### Áreas de conhecimento e técnicas envolvidas
+## Áreas de conhecimento e técnicas envolvidas
 
 A aplicação tem caráter multidisciplinar que envolve áreas da Computação, Matemática e Direito(principalmente do Código do Processo Civil):
 
@@ -342,7 +354,7 @@ A aplicação tem caráter multidisciplinar que envolve áreas da Computação, 
 - Além da conversão para construção do grafo, a ferramenta guia o usuário nas etapas necessárias para facilitar a gestão dos modelos.
 - Destacamos a utilização da técnica de análise de inconsistência de grafos baseada em regras. Para possibilitar essa técnica a arquitetura do sistema utilizou de uma arquitetura assíncrona com controle de tarefas e message broker.
 
-### Ambiente de execução
+## Ambiente de execução
 
 Para a disponibilização da aplicação utilizamos servidores (Droplets) da [Digital Ocean](www.digitalocean.com). Como todos os componentes da solução estão em containers, o gerenciamento, bem como o monitoramento é feito de forma automatizada e ágil.
 Todo o ambiente está rodando em uma VM com 4GB, e 2 processadores.
@@ -354,7 +366,7 @@ Já o uso de memória RAM se mantém constante em 70%
 
 Acesso para a aplicação: [Sanjus](http://time16-sanjus.ddns.net/)
 
-## Melhorias futuras:
+## Melhorias futuras
 
 A solução ora apresentada:
 

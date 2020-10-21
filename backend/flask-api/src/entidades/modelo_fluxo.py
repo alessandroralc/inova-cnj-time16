@@ -177,3 +177,46 @@ class ProcessoEvento(db.Model):
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+
+
+class TransacaoValida(db.Model):
+    __tablename__ = 'tb_transicao_valida'
+
+    id_transicao = db.Column(db.Integer, primary_key=True)
+    id_situacao_origem = db.Column(db.Integer, db.ForeignKey(
+        'tb_desc_situacao.id_situacao'), nullable=False)
+    id_evento = db.Column(db.Integer, db.ForeignKey(
+        'tb_desc_evento.id_evento'), nullable=True) 
+    id_situacao_destino = db.Column(db.Integer, db.ForeignKey(
+        'tb_desc_situacao.id_situacao'), nullable=False)
+    ind_consistente = db.Column(db.String(1), nullable=False)
+    ind_efetiva = db.Column(db.String(1), nullable=False)
+    sg_tribunal = db.Column(db.String(30), nullable=False)
+    sg_grau = db.Column(db.String(30), nullable=False)
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+
+
+class TransicaoGrupoValida(db.Model):
+    __tablename__ = 'tb_transicao_grp_valida'
+
+  
+    id_transicao_grp = db.Column(db.Integer, primary_key=True)
+    id_grupo = db.Column(db.Integer, db.ForeignKey(
+        'tb_desc_grp_situacao.id_grupo'), nullable=False)
+    id_evento = db.Column(db.Integer, db.ForeignKey(
+        'tb_desc_evento.id_evento'), nullable=True) 
+    id_situacao_destino = db.Column(db.Integer, db.ForeignKey(
+        'tb_desc_situacao.id_situacao'), nullable=False)
+    ind_consistente = db.Column(db.String(1), nullable=False)
+    ind_efetiva = db.Column(db.String(1), nullable=False)
+    sg_tribunal = db.Column(db.String(30), nullable=False)
+    sg_grau = db.Column(db.String(30), nullable=False)
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)

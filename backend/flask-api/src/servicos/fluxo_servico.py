@@ -17,7 +17,7 @@ def incluir_fluxo(parametros):
     return fluxo.id_fluxo_movimento
 
 
-def remover_evento(id_fluxo_movimento):
+def remover_fluxo(id_fluxo_movimento):
     db.session.query(FluxoMovimentos).filter(
         FluxoMovimentos.id_fluxo_movimento == id_fluxo_movimento).delete()
     db.session.commit()

@@ -11,15 +11,15 @@ import json
 
 def incluir_fluxo(parametros):
     fluxo = FluxoMovimentos(**parametros)
-    fluxo.id_fluxo = None
+    fluxo.id_fluxo_movimento = None
     db.session.add(fluxo)
     db.session.commit()
-    return fluxo.id_fluxo
+    return fluxo.id_fluxo_movimento
 
 
-def remover_evento(id_fluxo):
+def remover_evento(id_fluxo_movimento):
     db.session.query(FluxoMovimentos).filter(
-        FluxoMovimentos.id_fluxo == id_fluxo).delete()
+        FluxoMovimentos.id_fluxo_movimento == id_fluxo_movimento).delete()
     db.session.commit()
 
 

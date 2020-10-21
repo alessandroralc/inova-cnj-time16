@@ -84,8 +84,11 @@ class ProcessosSituacao(Resource):
 
     def get(self, str_consistente):
         try:
-            retorno = [helper.serializar_lista(situacao)
+            
+    
+            retorno = [helper.serializar(situacao)
                        for situacao in situacao_servico.listar_processos_por_consistencia(str_consistente)]
+            
             return Response(json.dumps(retorno, cls=helper.JSONEnconder), status=200)
         except Exception as e:
             traceback.print_exc()

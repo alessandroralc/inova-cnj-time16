@@ -1,5 +1,5 @@
 from flask import request, Response
-from flask_restful import Resource,reqparse, abort
+from flask_restful import Resource, reqparse, abort
 from ..servicos import fluxo_servico
 from ..utils import helper
 import json
@@ -10,8 +10,8 @@ class FluxoAPI(Resource):
 
     def get(self):
         try:
-            retorno = [helper.serializar(fluxo)
-                       for fluxo in fluxo_servico.listar_fluxo('N')]
+            retorno = [helper.serializar_lista(situacao)
+                       for situacao in fluxo_servico.listar_fluxo_formatado('N')]
             return Response(json.dumps(retorno), status=200)
         except Exception as e:
             traceback.print_exc()
@@ -28,7 +28,7 @@ class FluxoAPI(Resource):
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
     def put(self):
-        body = json.loads(request.get_data().decode('UTF-8'))        
+        body = json.loads(request.get_data().decode('UTF-8'))
         return fluxo_servico.atualizar_fluxo(body)
 
 
@@ -98,4 +98,4 @@ def configure_api(api):
     api.add_resource(
         FluxoDirRede, '/api/v1.0/fluxo/rede/<string:cd_tribunal>/<string:cd_grau>/<string:ind_consistente>')
     api.add_resource(
-        FluxoDirArvore, '/api/v1.0/fluxo/arvore/<string:cd_tribunal>/<string:cd_grau>/<string:ind_consistente>')   
+        FluxoDirArvore, '/api/v1.0/fluxo/arvore/<string:cd_tribunal>/<string:cd_grau>/<string:ind_consistente>')

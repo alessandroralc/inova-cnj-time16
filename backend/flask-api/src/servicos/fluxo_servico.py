@@ -1,11 +1,11 @@
 import re
 from typing import Dict
-from ..entidades.modelo_fluxo import FluxoMovimentos
+from ..entidades.modelo_fluxo import Evento, FluxoMovimentos, GrupoSituacao, Situacao
 from ..persistencia.database import db
 import sys
-from sqlalchemy.orm import aliased,load_only,Load,exc
+from sqlalchemy.orm import aliased, load_only, Load, exc
 from flask_restful import abort
-from flask import  Response
+from flask import Response
 import json
 
 
@@ -21,6 +21,27 @@ def remover_evento(id_fluxo):
     db.session.query(FluxoMovimentos).filter(
         FluxoMovimentos.id_fluxo == id_fluxo).delete()
     db.session.commit()
+
+
+def listar_fluxo_formatado(ind_fluxo_ri):
+    SituacaoOrigem = aliased(Situacao, name="origem")
+    SituacaoDestino = aliased(Situacao, name="destino")
+    cursor = db.session.query(SituacaoOrigem, SituacaoDestino, Evento, GrupoSituacao, FluxoMovimentos).\
+        options(
+            Load(SituacaoOrigem).load_only("cd_situacao", "ds_situacao"),
+            Load(Evento).load_only("cd_evento", "ds_evento"),
+            Load(SituacaoDestino).load_only("cd_situacao", "ds_situacao"),
+            Load(GrupoSituacao).load_only("ds_grupo")            
+    ).\
+        join(SituacaoOrigem, FluxoMovimentos.id_situacao_origem == SituacaoOrigem.id_situacao).\
+        join(SituacaoDestino, FluxoMovimentos.id_situacao_destino == SituacaoDestino.id_situacao).\
+        join(Evento, FluxoMovimentos.id_evento == Evento.id_evento).\
+        join(GrupoSituacao, FluxoMovimentos.id_grupo == GrupoSituacao.id_grupo).\
+        filter(FluxoMovimentos.ind_fluxo_ri == ind_fluxo_ri).all()
+    if cursor is not None:
+        return cursor
+    else:
+        return []
 
 
 def listar_fluxo(ind_fluxo_ri):
@@ -143,7 +164,7 @@ def gerar_transicoes_arvore(cd_tribunal, cd_instancia, ind_consistente):
     id_inicio = transicoes_inicio[0][3]
     deep = 7
     return {'cd_situacao': 'I',
-            'ds_situacao': 'Início', 
+            'ds_situacao': 'Início',
             'children': funcao_recursiva(cd_tribunal, cd_instancia,
                                          ind_consistente, id_inicio, None, deep, 1)
             }
@@ -172,25 +193,23 @@ def funcao_recursiva(cd_tribunal, cd_instancia, ind_consistente, id_situacao, li
 
 
 def atualizar_fluxo(data_json):
-    
+
     try:
-        obj_db = FluxoMovimentos.query.filter(FluxoMovimentos.id_fluxo_movimento == int(data_json['id_fluxo_movimento'])).one()
-    
+        obj_db = FluxoMovimentos.query.filter(
+            FluxoMovimentos.id_fluxo_movimento == int(data_json['id_fluxo_movimento'])).one()
+
     except (exc.NoResultFound, exc.MultipleResultsFound) as error:
-        return abort(404, message="ERRO: {}".format(error))    
-    
+        return abort(404, message="ERRO: {}".format(error))
+
     else:
-        
+
         for key, value in data_json.items():
             setattr(obj_db, key, value)
-       
 
-        try:        
+        try:
             db.session.commit()
         except Exception as error:
             db.session.rollback()
             return abort(404, message="ERRO: {}".format(error))
-        
-                
-        
-        return Response(json.dumps({'message':'Situacao com id {} atualizada.'.format(obj_db.id_fluxo_movimento)}), status=200)
+
+        return Response(json.dumps({'message': 'Situacao com id {} atualizada.'.format(obj_db.id_fluxo_movimento)}), status=200)

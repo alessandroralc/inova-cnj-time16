@@ -68,8 +68,23 @@ def listar_processos_consistencia(str_consistente):
     if cursor is not None:
         return cursor
     else:
-        print('None')
+        
         return []
+
+
+def listar_processos_por_consistencia(str_consistente):
+    processos = Processo
+    sub_query_exists = (db.session.query(HistoricoSituacao).filter(HistoricoSituacao.cd_processo == processos.cd_processo,HistoricoSituacao.ind_consistente == 'N').exists())
+    if str_consistente == 'N':
+        cursor = db.session.query(processos).filter(sub_query_exists).all()
+    else:
+        cursor = db.session.query(processos).filter(~sub_query_exists).all()
+    if cursor is not None:
+        return cursor
+    else:
+        
+        return []
+
 
 
 def listar_fluxo_processo(id_processo):

@@ -28,30 +28,10 @@ class EventoAPI(Resource):
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
-    def delete(self):
-        try:
-            body = json.loads(request.get_data().decode('UTF-8'))
-            if body:
-                evento_servico.remover_evento(body.get('id_evento'))
-                return Response('Registro excluído com sucesso', status=200)
-        except Exception as e:
-            traceback.print_exc()
-            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
     def put(self):
-        parser.add_argument('id_evento', required=True, location='json', type=int,
-            help="XXXXXXXXXXXXXx")
-        parser.add_argument('ds_evento', required=True, location='json', type=str,
-            help="XXXXXXXXXXXXX.")
-        parser.add_argument('cd_evento', required=True, location='json', type=str,
-            help="XXXXXXXXXXXXXXXXX")
-        parser.add_argument('ind_fluxo_ri', required=True, location='json', type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('ind_tipo_especial', required=False, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-
-        args = parser.parse_args()
-
-        return evento_servico.atualizar_evento(args)
+        body = json.loads(request.get_data().decode('UTF-8'))        
+        return evento_servico.atualizar_evento(body)
+      
 
 class EventoIdAPI(Resource):
 
@@ -60,6 +40,14 @@ class EventoIdAPI(Resource):
             retorno = [helper.serializar(evento)
                        for evento in evento_servico.listar_eventos_id(id_evento)]
             return Response(json.dumps(retorno), status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
+    def delete(self, id_evento):
+        try:
+            evento_servico.remover_evento(id_evento)
+            return Response('Registro excluído com sucesso', status=200)
         except Exception as e:
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')

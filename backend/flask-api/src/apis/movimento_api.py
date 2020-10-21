@@ -1,5 +1,5 @@
 from flask import request, Response
-from flask_restful import Resource,reqparse, abort
+from flask_restful import Resource, reqparse, abort
 from ..servicos import movimento_servico
 from ..utils import helper
 import json
@@ -20,6 +20,7 @@ class MovimentoAPI(Resource):
     def post(self):
         try:
             body = json.loads(request.get_data().decode('UTF-8'))
+            print(body)
             if body:
                 id_movimento = movimento_servico.incluir_movimento(body)
                 return Response(json.dumps({"id_movimento": id_movimento}), status=201)
@@ -37,24 +38,31 @@ class MovimentoAPI(Resource):
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
-
     def put(self):
         parser.add_argument('id_movimento', required=True, location='json', type=int,
-            help="XXXXXXXXXXXXXx")
+                            help="XXXXXXXXXXXXXx")
         parser.add_argument('cd_tpu_movimento', required=True, location='json', type=str,
-            help="XXXXXXXXXXXXX.")
+                            help="XXXXXXXXXXXXX.")
         parser.add_argument('id_evento', required=True, location='json', type=int,
-            help="XXXXXXXXXXXXXXXXX")
+                            help="XXXXXXXXXXXXXXXXX")
 
         args = parser.parse_args()
 
         return movimento_servico.atualizar_movimento(args)
 
 
-
-
+class MovimentoIdAPI(Resource):
+    def delete(self, id_movimento):
+        try:
+            movimento_servico.remover_movimento(id_movimento)
+            return Response('Registro excluído com sucesso', status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
 
 def configure_api(api):
     api.add_resource(
         MovimentoAPI, '/api/v1.0/movimento')
+    api.add_resource(
+        MovimentoIdAPI, '/api/v1.0/movimento/<int:id_movimento>')

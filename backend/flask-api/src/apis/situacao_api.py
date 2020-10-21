@@ -1,6 +1,6 @@
 from json import encoder
 from flask import request, Response
-from flask_restful import Resource,reqparse, abort
+from flask_restful import Resource, reqparse, abort
 from ..servicos import situacao_servico
 from ..utils import helper
 from ..persistencia.database import db
@@ -32,43 +32,9 @@ class SituacaoAPI(Resource):
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
-    def delete(self):
-        try:
-            body = json.loads(request.get_data().decode('UTF-8'))
-            if body:
-                situacao_servico.remover_situacao(body.get('id_situacao'))
-                return Response('Registro excluído com sucesso', status=200)
-        except Exception as e:
-            traceback.print_exc()
-            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
-    
     def put(self):
-        parser.add_argument('id_situacao', required=True, location='json', type=int,
-            help="XXXXXXXXXXXXXx")
-        parser.add_argument('ds_situacao', required=True, location='json', type=str,
-            help="XXXXXXXXXXXXX.")
-        parser.add_argument('cd_situacao', required=True, location='json', type=str,
-            help="XXXXXXXXXXXXXXXXX")
-        parser.add_argument('ind_principal', required=True, location='json', type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('ind_ri', required=True, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('sg_tribunal', required=True, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('sg_grau', required=True, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('fl_inicio', required=True, location='json', type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('fl_fim', required=True, location='json',type=str,
-            help="XXXXXXXXXXXXXXXX")
-        parser.add_argument('id_grupo', required=False, location='json',type=int,
-            help="XXXXXXXXXXXXXXXX")
-        
-        args = parser.parse_args()
-        
-        return situacao_servico.atualizar_situacao(args)
-       
-        
+        body = json.loads(request.get_data().decode('UTF-8'))        
+        return situacao_servico.atualizar_situacao(body)
 
 
 class SituacaoFiltroAPI(Resource):
@@ -94,17 +60,37 @@ class SituacaoIdAPI(Resource):
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
+    def delete(self, id_situacao):
+        try:
+            situacao_servico.remover_situacao(id_situacao)
+            return Response('Registro excluído com sucesso', status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
+
 class SituacaoProcesso(Resource):
 
     def get(self, str_consistente):
         try:
             retorno = [helper.serializar_lista(situacao)
                        for situacao in situacao_servico.listar_processos_consistencia(str_consistente)]
-            
             return Response(json.dumps(retorno, cls=helper.JSONEnconder), status=200)
         except Exception as e:
             traceback.print_exc()
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
+class ProcessosSituacao(Resource):
+
+    def get(self, str_consistente):
+        try:
+            retorno = [helper.serializar_lista(situacao)
+                       for situacao in situacao_servico.listar_processos_por_consistencia(str_consistente)]
+            return Response(json.dumps(retorno, cls=helper.JSONEnconder), status=200)
+        except Exception as e:
+            traceback.print_exc()
+            return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
+
 
 class FluxoOfProcesso(Resource):
 
@@ -119,8 +105,6 @@ class FluxoOfProcesso(Resource):
             return Response('error: \'{0}\''.format(''.join(e.args)), status=500, mimetype='application/json')
 
 
-
-
 def configure_api(api):
     api.add_resource(
         SituacaoAPI, '/api/v1.0/situacao')
@@ -129,6 +113,6 @@ def configure_api(api):
     api.add_resource(
         SituacaoFiltroAPI, '/api/v1.0/situacao/<string:cod_tribunal>/<string:cod_instancia>')
     api.add_resource(
-        SituacaoProcesso, '/api/v1.0/situacao/<string:str_consistente>')
+        ProcessosSituacao, '/api/v1.0/situacao/<string:str_consistente>')
     api.add_resource(
         FluxoOfProcesso, '/api/v1.0/situacao/processo/<string:id_processo>')

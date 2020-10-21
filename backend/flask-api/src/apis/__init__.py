@@ -8,7 +8,7 @@ from .prometheus_exporter import configure_prometheus
 from .carregar_processos import configure_api as carregar_processos_api
 from .tribunal_api import configure_api as tribunal_api
 from .grupo_api import configure_api as grupo_api
-
+from .movimento_api import configure_api as movimento_api
 
 def configure_api(application, api, configuracao):
     configure_health_check(application, configuracao)
@@ -21,3 +21,4 @@ def configure_api(application, api, configuracao):
     carregar_processos_api(api)
     tribunal_api(api)
     grupo_api(api)
+    movimento_api(api)

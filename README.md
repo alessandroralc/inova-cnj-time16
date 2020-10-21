@@ -59,6 +59,11 @@ Com a existência de um gerenciador de filas, bem como containers de workers iso
 - Redis: BSD License
   Frontend
 
+#### Documentação das APIs
+
+Para as APIs, criamos a documentação a seguir que descreve os endpoints, métodos e exemplos:
+[APIs Rest Sanjud](backend/README.md)
+
 ##### Instruções para a execução do docker-compose
 
 1. Criar um arquivo .env na pasta docker com os propriedades abaixo:
@@ -105,7 +110,7 @@ Desta forma a aplicação foi construída utilizando o framework Angular. Para m
 
 ### Ambiente de execução
 
-Para a disponibilização da aplicação utilizamos servidores (Droplets) da ![Digital Ocean](www.digitalocean.com). Como todos os componentes da solução estão em containers, o gerenciamento, bem como o monitoramento é feito de forma automatizada e ágil.
+Para a disponibilização da aplicação utilizamos servidores (Droplets) da [Digital Ocean](www.digitalocean.com). Como todos os componentes da solução estão em containers, o gerenciamento, bem como o monitoramento é feito de forma automatizada e ágil.
 Todo o ambiente está rodando em uma VM com 4GB, e 2 processadores. 
 Durante os testes e nos monitoramentos que realizamos o máximo de load que máquina chegou foi em 0,5.
 ![Load](doc/load-cpu.png)
